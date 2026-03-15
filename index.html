@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MaçAnaliz Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07090b;--s1:#0e1318;--s2:#141b22;
+  --b1:#1c2a38;--b2:#243245;
+  --g:#00e5a0;--r:#ff4557;--y:#f5c542;--bl:#38b6ff;--pu:#c084fc;
+  --tx:#d8e4f0;--mu:#47606f;--mu2:#627d90;
+  --rad:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 40% at 50% -10%,rgba(0,229,160,.04),transparent);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--s1)}::-webkit-scrollbar-thumb{background:var(--b2);border-radius:3px}
+
+.ticker{overflow:hidden;white-space:nowrap;background:rgba(0,229,160,.03);border-bottom:1px solid rgba(0,229,160,.08);height:22px;display:flex;align-items:center}
+.ticker-inner{display:inline-block;animation:tick 50s linear infinite;font-family:'DM Mono';font-size:9px;color:var(--mu2);padding-left:100%}
+@keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+
+header{position:sticky;top:0;z-index:300;background:rgba(7,9,11,.96);backdrop-filter:blur(24px);border-bottom:1px solid var(--b1);padding:0 20px;display:flex;align-items:center;gap:10px;height:56px}
+.logo{font-family:'Bebas Neue';font-size:22px;letter-spacing:3px;color:var(--g)}
+.logo span{color:var(--tx)}
+.pro-b{background:linear-gradient(135deg,var(--g),#00c07a);color:#000;font-size:8px;font-weight:900;padding:2px 7px;border-radius:20px;letter-spacing:1.5px}
+.wk{font-family:'DM Mono';font-size:10px;color:var(--mu2);border:1px solid var(--b1);padding:3px 9px;border-radius:5px}
+.hdr-r{margin-left:auto;display:flex;align-items:center;gap:8px}
+.cd-box{font-family:'DM Mono';font-size:10px;color:var(--mu2);border:1px solid var(--b1);padding:3px 9px;border-radius:5px;cursor:pointer;transition:all .2s}
+.cd-box:hover{border-color:var(--g);color:var(--g)}
+.go-btn{background:var(--g);color:#000;border:none;padding:7px 20px;border-radius:8px;font-family:'DM Sans';font-weight:800;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:transform .15s,opacity .15s}
+.go-btn:hover{opacity:.85;transform:translateY(-1px)}
+.go-btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.spin{animation:sp .8s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+
+main{position:relative;z-index:1;max-width:1340px;margin:0 auto;padding:20px 18px}
+
+.sg{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin-bottom:20px}
+.sc{background:var(--s1);border:1px solid var(--b1);border-radius:11px;padding:12px 14px;cursor:pointer;position:relative;overflow:hidden;transition:all .18s}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.sc.act{border-width:2px}
+.sc:hover{transform:translateY(-2px)}
+.sc[data-f="all"]::before{background:linear-gradient(90deg,var(--g),var(--bl))}
+.sc[data-f="home"]::before{background:var(--g)}.sc[data-f="home"].act{border-color:var(--g)}
+.sc[data-f="away"]::before{background:var(--r)}.sc[data-f="away"].act{border-color:var(--r)}
+.sc[data-f="draw"]::before{background:var(--y)}.sc[data-f="draw"].act{border-color:var(--y)}
+.sc[data-f="over"]::before{background:var(--bl)}.sc[data-f="over"].act{border-color:var(--bl)}
+.sc[data-f="under"]::before{background:var(--pu)}.sc[data-f="under"].act{border-color:var(--pu)}
+.sc[data-f="all"].act{border-color:var(--g)}
+.sc-lb{font-size:8px;text-transform:uppercase;letter-spacing:1.5px;color:var(--mu);margin-bottom:2px}
+.sc-v{font-family:'Bebas Neue';font-size:30px;line-height:1}
+.sc[data-f="all"] .sc-v{color:var(--tx)}.sc[data-f="home"] .sc-v{color:var(--g)}.sc[data-f="away"] .sc-v{color:var(--r)}.sc[data-f="draw"] .sc-v{color:var(--y)}.sc[data-f="over"] .sc-v{color:var(--bl)}.sc[data-f="under"] .sc-v{color:var(--pu)}
+.sc-h{font-size:8px;color:var(--mu);margin-top:2px;opacity:0;transition:opacity .15s}
+.sc:hover .sc-h{opacity:1}
+
+.lay{display:grid;grid-template-columns:1fr 330px;gap:16px;align-items:start}
+.sh{display:flex;align-items:center;gap:9px;margin-bottom:11px}
+.sh-t{font-family:'Bebas Neue';font-size:15px;letter-spacing:2px;color:var(--mu2)}
+.sh-line{flex:1;height:1px;background:var(--b1)}
+.sh-upd{font-size:8px;color:var(--g);background:rgba(0,229,160,.07);border:1px solid rgba(0,229,160,.2);padding:2px 7px;border-radius:3px;display:none}
+.sh-b{font-family:'DM Mono';font-size:9px;color:var(--mu);background:var(--s2);border:1px solid var(--b1);padding:2px 7px;border-radius:3px}
+
+.lf{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+.lfb{background:var(--s1);border:1px solid var(--b1);color:var(--mu2);padding:4px 11px;border-radius:18px;font-size:9px;font-weight:700;cursor:pointer;transition:all .15s}
+.lfb:hover,.lfb.on{background:rgba(0,229,160,.08);border-color:var(--g);color:var(--g)}
+
+.ml{display:flex;flex-direction:column;gap:7px}
+.mc{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rad);overflow:hidden;transition:all .2s;animation:fu .3s ease both;position:relative}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.mc::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;opacity:0;transition:opacity .2s}
+.mc:hover{border-color:var(--b2);transform:translateX(2px)}
+.mc:hover::after{opacity:1}
+.mc.ph::after{background:var(--g)}.mc.pa::after{background:var(--r)}.mc.pd::after{background:var(--y)}
+.mc.dimmed{opacity:.13;filter:grayscale(.8);pointer-events:none;transition:all .3s}
+
+.live-b{position:absolute;top:9px;left:9px;z-index:10;background:var(--r);color:#fff;font-family:'DM Mono';font-size:7px;font-weight:700;padding:3px 8px;border-radius:3px;display:flex;align-items:center;gap:5px;animation:glow 2s infinite}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(255,69,87,.7)}50%{box-shadow:0 0 0 5px rgba(255,69,87,0)}}
+.live-b .ld{width:5px;height:5px;border-radius:50%;background:#fff;animation:bk 1s infinite}
+@keyframes bk{0%,100%{opacity:1}50%{opacity:.15}}
+.played-b{position:absolute;top:9px;left:9px;z-index:10;background:rgba(255,255,255,.07);color:var(--mu2);font-family:'DM Mono';font-size:7px;font-weight:700;padding:3px 8px;border-radius:3px;border:1px solid var(--b2)}
+.chk{position:absolute;top:10px;right:10px;z-index:10;width:18px;height:18px;border:1px solid var(--b2);border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;background:var(--s2);transition:all .15s}
+.chk:hover{border-color:var(--bl)}.chk.on{background:var(--bl);border-color:var(--bl)}
+.chk.on::after{content:'✓';color:#000;font-size:10px;font-weight:900}
+
+.mc-top{padding:13px 16px;display:grid;grid-template-columns:115px 1fr;gap:12px;align-items:start}
+.mc.has-s .mc-top{padding-top:32px}
+.mc-league{font-size:7px;text-transform:uppercase;letter-spacing:1.5px;color:var(--g);font-weight:700;margin-bottom:2px}
+.mc-date{font-family:'DM Mono';font-size:9px;color:var(--mu2)}
+.mc-time{font-family:'DM Mono';font-size:20px;font-weight:500;color:var(--tx);line-height:1;margin:2px 0 5px}
+.tag-sm{font-size:7px;padding:1px 5px;border:1px solid var(--b1);border-radius:2px;display:inline-block;color:var(--mu)}
+.mc-wx{font-size:9px;color:var(--mu2);margin-top:5px;line-height:1.5}
+.mc-inj{font-size:8px;color:var(--r);opacity:.85;margin-top:2px;line-height:1.4}
+
+.tr{display:flex;align-items:center;gap:6px;margin-bottom:9px}
+.tn{font-size:13px;font-weight:700;flex:1;line-height:1.2}
+.tn.aw{text-align:right}
+.vs-t{font-size:7px;font-family:'DM Mono';color:var(--mu);background:var(--s2);padding:2px 5px;border-radius:3px;flex-shrink:0}
+.tp-b{font-size:7px;background:var(--g);color:#000;font-weight:900;padding:2px 6px;border-radius:18px;flex-shrink:0}
+
+.or{display:flex;gap:4px;flex-wrap:wrap;align-items:stretch;margin-bottom:8px}
+.op{display:flex;flex-direction:column;align-items:center;padding:6px 8px;border-radius:7px;border:1px solid transparent;min-width:52px;position:relative;overflow:hidden;flex-shrink:0}
+.op::before{content:'';position:absolute;inset:0;opacity:.08}
+.op.h{border-color:var(--g)}.op.h::before{background:var(--g)}
+.op.d{border-color:var(--y)}.op.d::before{background:var(--y)}
+.op.a{border-color:var(--r)}.op.a::before{background:var(--r)}
+.op.ov{border-color:var(--bl)}.op.ov::before{background:var(--bl)}
+.op.un{border-color:var(--pu)}.op.un::before{background:var(--pu)}
+.op-l{font-size:7px;text-transform:uppercase;letter-spacing:.8px;font-weight:700}
+.op.h .op-l{color:var(--g)}.op.d .op-l{color:var(--y)}.op.a .op-l{color:var(--r)}.op.ov .op-l{color:var(--bl)}.op.un .op-l{color:var(--pu)}
+.op-v{font-family:'Bebas Neue';font-size:18px;line-height:1;color:var(--tx);margin-top:1px}
+.op-s{font-size:6px;color:var(--mu);margin-top:1px}
+.dv{width:1px;background:var(--b1);align-self:stretch;margin:0 2px;flex-shrink:0}
+.ai-b{background:var(--s2);border:1px solid var(--b2);border-radius:7px;padding:6px 9px;text-align:center;margin-left:auto;min-width:76px;flex-shrink:0}
+.ai-lb{font-size:7px;text-transform:uppercase;color:var(--mu);margin-bottom:2px}
+.ai-pr{font-size:11px;font-weight:800}
+.ai-pr.h{color:var(--g)}.ai-pr.d{color:var(--y)}.ai-pr.a{color:var(--r)}
+.ai-gl{font-size:8px;color:var(--mu);margin-top:1px}
+
+.cr{display:flex;align-items:center;gap:6px;margin-top:6px}
+.c-lb{font-size:7px;color:var(--mu);white-space:nowrap}
+.c-bar{flex:1;height:2px;background:var(--b1);border-radius:2px;overflow:hidden}
+.c-fill{height:100%;border-radius:2px;transition:width 1.1s cubic-bezier(.4,0,.2,1);width:0%}
+.c-pct{font-family:'DM Mono';font-size:9px;white-space:nowrap}
+.c-pct.hi{color:var(--g)}.c-pct.mi{color:var(--y)}.c-pct.lo{color:var(--r)}
+
+.scenarios{border-top:1px solid var(--b1);padding:10px 16px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.sbox{border-radius:8px;padding:9px 10px;border:1px solid transparent}
+.sbox.w{background:rgba(0,229,160,.04);border-color:rgba(0,229,160,.15)}
+.sbox.l{background:rgba(255,69,87,.04);border-color:rgba(255,69,87,.15)}
+.sbox.dr{background:rgba(245,197,66,.04);border-color:rgba(245,197,66,.15)}
+.sbox-ttl{font-size:7px;text-transform:uppercase;letter-spacing:1px;font-weight:800;margin-bottom:4px}
+.sbox-ttl.w{color:var(--g)}.sbox-ttl.l{color:var(--r)}.sbox-ttl.dr{color:var(--y)}
+.sbox-txt{font-size:9px;color:var(--mu2);line-height:1.55}
+
+.cpan{position:sticky;top:64px;display:flex;flex-direction:column;gap:11px;max-height:calc(100vh - 80px);overflow-y:auto}
+.cs{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rad);overflow:hidden}
+.csh{padding:10px 13px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:7px}
+.csh-i{font-size:13px}.csh-t{font-family:'Bebas Neue';font-size:14px;letter-spacing:1.5px}
+.csh-c{font-family:'DM Mono';font-size:8px;color:var(--mu);margin-left:auto}
+.csh.s .csh-t{color:var(--g)}.csh.m .csh-t{color:var(--y)}.csh.r .csh-t{color:var(--r)}.csh.c .csh-t{color:var(--bl)}
+.cbody{padding:8px}
+.ci{padding:6px 8px;border-radius:6px;background:var(--s2);margin-bottom:4px;border-left:2px solid var(--b1)}
+.ci:last-child{margin-bottom:0}
+.ci.s{border-color:var(--g)}.ci.m{border-color:var(--y)}.ci.r{border-color:var(--r)}.ci.c{border-color:var(--bl)}
+.ci-t{font-size:9px;font-weight:700;margin-bottom:2px;line-height:1.3}
+.ci-r{display:flex;align-items:center;gap:4px}
+.ci-p{font-size:7px;color:var(--mu);text-transform:uppercase;flex:1;display:flex;gap:3px;align-items:center}
+.ci-o{font-family:'Bebas Neue';font-size:14px;flex-shrink:0}
+.ci-o.s{color:var(--g)}.ci-o.m{color:var(--y)}.ci-o.r{color:var(--r)}.ci-o.c{color:var(--bl)}
+.ctot{padding:8px 12px;border-top:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between}
+.ctot-l{font-size:9px;color:var(--mu)}.ctot-v{font-family:'Bebas Neue';font-size:18px}
+.ctot-v.s{color:var(--g)}.ctot-v.m{color:var(--y)}.ctot-v.r{color:var(--r)}.ctot-v.c{color:var(--bl)}
+.cst{padding:7px 12px 11px;border-top:1px solid var(--b1)}
+.cst-l{font-size:7px;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.cst-i{background:var(--s2);border:1px solid var(--b2);color:var(--tx);padding:5px 8px;border-radius:5px;font-family:'DM Mono';font-size:10px;width:100%;outline:none}
+.cst-i:focus{border-color:var(--g)}
+.cwin{font-size:9px;color:var(--mu);margin-top:4px;display:flex;justify-content:space-between}
+.cwin span{font-weight:700;font-family:'DM Mono'}
+.cwin span.s{color:var(--g)}.cwin span.m{color:var(--y)}.cwin span.r{color:var(--r)}.cwin span.c{color:var(--bl)}
+.cem{padding:14px;text-align:center;color:var(--mu);font-size:10px}
+.cem-i{font-size:20px;margin-bottom:5px}
+
+.stb{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rad);padding:50px 28px;text-align:center}
+.stb .si{font-size:42px;margin-bottom:12px}
+.stb h3{font-family:'Bebas Neue';font-size:20px;letter-spacing:1px;margin-bottom:7px}
+.stb p{font-size:12px;color:var(--mu);line-height:1.65;max-width:440px;margin:0 auto}
+
+.lbox{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rad);padding:40px 28px;text-align:center}
+.lbox h3{font-family:'Bebas Neue';font-size:18px;letter-spacing:1px;margin-bottom:14px}
+.pbar{width:100%;max-width:380px;height:3px;background:var(--b1);border-radius:2px;overflow:hidden;margin:0 auto}
+.pfill{height:100%;background:linear-gradient(90deg,var(--g),#00b07a);border-radius:2px;transition:width .5s ease;width:5%}
+.ptxt{font-family:'DM Mono';font-size:10px;color:var(--mu);margin-top:8px}
+.lsteps{display:flex;flex-direction:column;gap:5px;margin-top:16px;text-align:left;max-width:300px;margin-left:auto;margin-right:auto}
+.lstep{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--mu);transition:all .3s}
+.lstep.done{color:var(--g)}.lstep.cur{color:var(--tx)}
+.ls-i{font-size:11px;width:14px;text-align:center;flex-shrink:0}
+
+.ebox{background:rgba(255,69,87,.05);border:1px solid rgba(255,69,87,.2);border-radius:var(--rad);padding:28px;text-align:center}
+.ebox h3{font-family:'Bebas Neue';font-size:18px;color:var(--r);margin-bottom:8px}
+.ebox p{font-size:11px;color:var(--mu2);line-height:1.65;margin-bottom:14px;max-width:400px;margin-left:auto;margin-right:auto}
+.retry-btn{background:var(--g);color:#000;border:none;padding:8px 20px;border-radius:7px;font-family:'DM Sans';font-weight:700;font-size:12px;cursor:pointer}
+
+.disc{margin-top:18px;background:rgba(245,197,66,.04);border:1px solid rgba(245,197,66,.14);border-radius:9px;padding:10px 15px;display:flex;gap:8px;align-items:flex-start;font-size:9px;color:var(--mu);line-height:1.55}
+.disc strong{color:var(--y)}
+
+@media(max-width:880px){.lay{grid-template-columns:1fr}.cpan{position:static;max-height:none}.sg{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:520px){.sg{grid-template-columns:repeat(2,1fr)}.mc-top{grid-template-columns:1fr}.scenarios{grid-template-columns:1fr}header{gap:6px}.wk{display:none}}
+</style>
+</head>
+<body>
+
+<div class="ticker"><span class="ticker-inner" id="tickerInner">⚽ MaçAnaliz Pro — Analiz Et butonuna tıklayın · İddaa Oranları · Hava Durumu · Sakatlık · 3 Senaryo AI Analizi</span></div>
+
+<header>
+  <div class="logo">Maç<span>Analiz</span></div>
+  <div class="pro-b">PRO</div>
+  <div class="wk" id="wkLabel">—</div>
+  <div class="hdr-r">
+    <div class="cd-box" id="cdBox" onclick="go()">⟳ Güncelle</div>
+    <button class="go-btn" id="goBtn" onclick="go()">
+      <svg id="goBtnIco" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+      Analiz Et
+    </button>
+  </div>
+</header>
+
+<main>
+  <div class="sg">
+    <div class="sc act" data-f="all" onclick="sf('all',this)"><div class="sc-lb">Toplam</div><div class="sc-v" id="sv0">—</div><div class="sc-h">tümünü göster</div></div>
+    <div class="sc" data-f="home" onclick="sf('home',this)"><div class="sc-lb">Ev Galibiyeti</div><div class="sc-v" id="sv1">—</div><div class="sc-h">↑ filtrele</div></div>
+    <div class="sc" data-f="away" onclick="sf('away',this)"><div class="sc-lb">Deplasman</div><div class="sc-v" id="sv2">—</div><div class="sc-h">↑ filtrele</div></div>
+    <div class="sc" data-f="draw" onclick="sf('draw',this)"><div class="sc-lb">Beraberlik</div><div class="sc-v" id="sv3">—</div><div class="sc-h">↑ filtrele</div></div>
+    <div class="sc" data-f="over" onclick="sf('over',this)"><div class="sc-lb">2.5 Üst</div><div class="sc-v" id="sv4">—</div><div class="sc-h">↑ filtrele</div></div>
+    <div class="sc" data-f="under" onclick="sf('under',this)"><div class="sc-lb">2.5 Alt</div><div class="sc-v" id="sv5">—</div><div class="sc-h">↑ filtrele</div></div>
+  </div>
+
+  <div class="lay">
+    <div>
+      <div class="sh">
+        <span class="sh-t" id="secT">Haftalık Maçlar</span>
+        <div class="sh-line"></div>
+        <span class="sh-upd" id="lastUpd">—</span>
+        <span class="sh-b" id="mCntBadge">0 maç</span>
+      </div>
+      <div class="lf" id="lfBar"><button class="lfb on" onclick="lf('all',this)">🌍 Tümü</button></div>
+      <div class="ml" id="matchList">
+        <div class="stb">
+          <div class="si">⚽</div>
+          <h3>Analizi Başlat</h3>
+          <p><strong style="color:var(--g)">Analiz Et</strong> butonuna tıklayın.<br><br>
+          Gerçek fikstür · İddaa oranları · Hava durumu<br>Sakatlık & ceza · 3 Senaryo AI Analizi<br><br>
+          <span style="opacity:.5;font-size:10px">Her 5 dakikada otomatik güncellenir</span></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cpan">
+      <div class="cs"><div class="csh s"><span class="csh-i">🟢</span><span class="csh-t">Güvenli Kupon</span><span class="csh-c" id="sCnt">0 seç</span></div><div class="cbody" id="sBody"><div class="cem"><div class="cem-i">📋</div>Analiz bekleniyor…</div></div><div class="ctot"><span class="ctot-l">Toplam Oran</span><span class="ctot-v s" id="sTot">—</span></div><div class="cst"><div class="cst-l">Bahis (₺)</div><input class="cst-i" id="sk-s" type="number" value="100" oninput="cw('s')"><div class="cwin">Kazanç: <span class="s" id="cw-s">—</span></div></div></div>
+      <div class="cs"><div class="csh m"><span class="csh-i">🟡</span><span class="csh-t">Orta Kupon</span><span class="csh-c" id="mCnt2">0 seç</span></div><div class="cbody" id="mBody"><div class="cem"><div class="cem-i">📋</div>Analiz bekleniyor…</div></div><div class="ctot"><span class="ctot-l">Toplam Oran</span><span class="ctot-v m" id="mTot">—</span></div><div class="cst"><div class="cst-l">Bahis (₺)</div><input class="cst-i" id="sk-m" type="number" value="100" oninput="cw('m')"><div class="cwin">Kazanç: <span class="m" id="cw-m">—</span></div></div></div>
+      <div class="cs"><div class="csh r"><span class="csh-i">🔴</span><span class="csh-t">Riskli Kupon</span><span class="csh-c" id="rCnt">0 seç</span></div><div class="cbody" id="rBody"><div class="cem"><div class="cem-i">📋</div>Analiz bekleniyor…</div></div><div class="ctot"><span class="ctot-l">Toplam Oran</span><span class="ctot-v r" id="rTot">—</span></div><div class="cst"><div class="cst-l">Bahis (₺)</div><input class="cst-i" id="sk-r" type="number" value="100" oninput="cw('r')"><div class="cwin">Kazanç: <span class="r" id="cw-r">—</span></div></div></div>
+      <div class="cs"><div class="csh c"><span class="csh-i">⭐</span><span class="csh-t">Kendi Kuponum</span><span class="csh-c" id="cCnt">0 seç</span></div><div class="cbody" id="cBody"><div class="cem"><div class="cem-i">☑️</div>Kart köşesini işaretle</div></div><div class="ctot"><span class="ctot-l">Toplam Oran</span><span class="ctot-v c" id="cTot">—</span></div><div class="cst"><div class="cst-l">Bahis (₺)</div><input class="cst-i" id="sk-c" type="number" value="100" oninput="cw('c')"><div class="cwin">Kazanç: <span class="c" id="cw-c">—</span></div></div></div>
+    </div>
+  </div>
+  <div class="disc"><div style="font-size:13px;flex-shrink:0">⚠️</div><div><strong>Sorumluluk Reddi:</strong> Bu site tamamen eğlence amaçlıdır. AI analizleri kesin sonuç garantisi vermez. Bahis bağımlılığı ciddi sorunlara yol açabilir. <strong>İddaa 18 yaş ve üzeridir.</strong></div></div>
+</main>
+
+<script>
+// ── STATE ─────────────────────────────────────────────
+let ALL=[], SF='all', LF='all', SEL=new Set(), autoTimer=null, cdTimer=null;
+
+// ── INIT ──────────────────────────────────────────────
+(function(){
+  const now=new Date(),d1=new Date(now),d2=new Date(now);
+  d1.setDate(now.getDate()-now.getDay()+1); d2.setDate(d1.getDate()+6);
+  const f=d=>d.toLocaleDateString('tr-TR',{day:'2-digit',month:'short'});
+  document.getElementById('wkLabel').textContent=f(d1)+' – '+f(d2);
+})();
+
+// ── API CALL ───────────────────────────────────────────
+// Vercel'de: /api/analyze proxy'sine gider (key gizli kalır)
+// file:/// açılışta veya başka ortamda: window.claude.complete() dener
+async function callAI(prompt) {
+  const isVercel = window.location.protocol === 'https:' && !window.location.hostname.includes('localhost') && window.location.pathname !== '/';
+  const isLocalFile = window.location.protocol === 'file:';
+  const hasProxy = !isLocalFile;
+
+  // Vercel veya herhangi bir web sunucusunda → proxy kullan
+  if (hasProxy) {
+    try {
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: [{ role: 'user', content: prompt }] })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (!data.error) return (data.content||[]).map(i=>i.text||'').join('').trim();
+      }
+    } catch(e) { /* proxy başarısız, fallback dene */ }
+  }
+
+  // file:// veya proxy başarısız → window.claude dene (claude.ai artifact)
+  if (typeof window.claude !== 'undefined' && typeof window.claude.complete === 'function') {
+    return await window.claude.complete(prompt);
+  }
+
+  // Hiçbiri çalışmadı → anlamlı hata
+  if (isLocalFile) {
+    throw new Error('Dosyayı doğrudan tarayıcıda açtınız. Lütfen siteyi Vercel\'e deploy edin veya claude.ai\'da açın. Detaylar için README.md dosyasına bakın.');
+  }
+  throw new Error('API bağlantısı kurulamadı. Vercel\'de ANTHROPIC_API_KEY environment variable\'ını kontrol edin.');
+}
+
+// ── GO ────────────────────────────────────────────────
+async function go(){
+  const btn=document.getElementById('goBtn');
+  const ico=document.getElementById('goBtnIco');
+  btn.disabled=true; ico.classList.add('spin');
+  showLoading();
+  try{
+    await runAI();
+    if(autoTimer) clearInterval(autoTimer);
+    autoTimer=setInterval(()=>go(),5*60*1000);
+    startCD(300);
+  }catch(e){ showError(e.message); }
+  btn.disabled=false; ico.classList.remove('spin');
+}
+
+// ── LOADING ───────────────────────────────────────────
+function showLoading(){
+  document.getElementById('matchList').innerHTML=`
+    <div class="lbox">
+      <h3>🔄 Analiz Başlatılıyor…</h3>
+      <div class="pbar"><div class="pfill" id="pf"></div></div>
+      <div class="ptxt" id="pt">Lütfen bekleyin…</div>
+      <div class="lsteps">
+        <div class="lstep cur" id="ls0"><span class="ls-i">📅</span>Haftalık fikstür hazırlanıyor</div>
+        <div class="lstep" id="ls1"><span class="ls-i">💰</span>İddaa oranları hesaplanıyor</div>
+        <div class="lstep" id="ls2"><span class="ls-i">🌤️</span>Hava durumu faktörü</div>
+        <div class="lstep" id="ls3"><span class="ls-i">🩹</span>Sakatlık ve ceza bilgileri</div>
+        <div class="lstep" id="ls4"><span class="ls-i">🧠</span>AI senaryolar üretiyor</div>
+      </div>
+    </div>`;
+}
+function step(i,pct,txt){
+  for(let j=0;j<i;j++){
+    const el=document.getElementById('ls'+j);
+    if(el){el.classList.remove('cur');el.classList.add('done');el.querySelector('.ls-i').textContent='✅';}
+  }
+  const c=document.getElementById('ls'+i); if(c) c.classList.add('cur');
+  const pf=document.getElementById('pf'); if(pf) pf.style.width=pct+'%';
+  const pt=document.getElementById('pt'); if(pt) pt.textContent=txt;
+}
+function showError(msg){
+  document.getElementById('matchList').innerHTML=`
+    <div class="ebox">
+      <h3>❌ Analiz Hatası</h3>
+      <p>${msg}</p>
+      <button class="retry-btn" onclick="go()">↻ Tekrar Dene</button>
+    </div>`;
+}
+
+// ── AI ANALYSIS ───────────────────────────────────────
+async function runAI(){
+  const now=new Date();
+  const dateStr=now.toLocaleDateString('tr-TR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const timeStr=now.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
+  const from=now.toISOString().split('T')[0];
+  const toD=new Date(now); toD.setDate(now.getDate()+7);
+  const to=toD.toISOString().split('T')[0];
+
+  step(0,15,'Fikstür hazırlanıyor…');  await sleep(300);
+  step(1,35,'Oranlar hesaplanıyor…'); await sleep(300);
+  step(2,55,'Hava durumu…');           await sleep(250);
+  step(3,72,'Sakatlık bilgileri…');    await sleep(250);
+  step(4,88,'AI yazıyor…');
+
+  const slFixtures = getSuperLigFixtures(now);
+
+  const prompt=`Sen elit bir futbol analiz yapay zekasısın. Bugün: ${dateStr}, saat ${timeStr} (Türkiye). Hafta: ${from}–${to}.
+
+ZORUNLU: SÜPER LİG GERÇEK FİKSTÜRÜ (BUNLARI AYNEN KULLAN, DEĞİŞTİRME):
+${slFixtures}
+
+Bu Süper Lig maçlarını listeye al. Ek olarak bu haftanın gerçek maçlarından ekle:
+🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier Lig | 🇪🇸 La Liga | 🇩🇪 Bundesliga | 🇮🇹 Serie A | 🏆 Şampiyonlar Ligi
+Toplam 16-20 maç.
+
+Her maç için: son 5 maç formu, kafa kafaya geçmiş maçlar, hava durumu (şehir-sıcaklık-rüzgar), sakatlıklar/cezalılar, motivasyon/yorgunluk, ev avantajı.
+
+isPlayed:true → oynanmış result:"2-1" | isLive:true → şu an oynuyor liveMinute:"67'" | varsayılan: false
+
+Oranlar Mackolik/İddaa.com tarzı (1.25–7.50, 2 ondalık).
+
+SADECE JSON, başka hiçbir şey:
+{"matches":[{"id":1,"league":"Süper Lig","flag":"🇹🇷","homeTeam":"Fenerbahçe","awayTeam":"Gaziantep FK","date":"2026-03-17","time":"19:00","homeWinOdds":1.35,"drawOdds":4.50,"awayWinOdds":7.00,"over25Odds":1.60,"under25Odds":2.25,"prediction":"home","goalPrediction":"over","confidence":82,"weather":"🌤️ 14°C açık rüzgar 12km/s","injuries":"⚠️ Crespo şüpheli","winScenario":"Fenerbahçe evinde bu sezon sadece 1 maç kaybetti. Osimhen formda.","loseScenario":"Gaziantep deplasmanda sürpriz yapabilir.","drawScenario":"Fenerbahçe tempo düşürürse Gaziantep puanı kurtarabilir.","isPlayed":false,"isLive":false,"result":null,"liveMinute":null}]}`;
+
+  const raw = await callAI(prompt);
+  const clean=raw.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/\s*```$/i,'').trim();
+  const jMatch=clean.match(/\{[\s\S]*\}/);
+  if(!jMatch) throw new Error('JSON bulunamadı. Tekrar deneyin.');
+  let parsed;
+  try{ parsed=JSON.parse(jMatch[0]); }
+  catch(e){ throw new Error('JSON parse hatası: '+e.message.slice(0,80)); }
+  if(!parsed.matches?.length) throw new Error('Maç listesi boş. Tekrar deneyin.');
+
+  ALL=parsed.matches;
+  const upd=document.getElementById('lastUpd');
+  if(upd){upd.style.display='';upd.textContent='🔄 '+new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});}
+  updateStats(); buildLF(); buildCoupons(); render(); updateTicker();
+}
+
+
+// ── REAL SUPER LIG FIXTURES (web'den alındı) ─────────
+function getSuperLigFixtures(now) {
+  // Bu haftanın gerçek Süper Lig maçları (Flashscore/TFF verisine göre)
+  // 26-27. hafta (15-22 Mart 2026)
+  const fixtures = [
+    // 26. Hafta (15 Mart - oynanmış)
+    { home: 'Gençlerbirliği', away: 'Beşiktaş',    date: '2026-03-15', time: '19:00', played: true },
+    { home: 'Samsunspor',     away: 'Kayserispor', date: '2026-03-15', time: '21:00', played: true },
+    // 27. Hafta (16-22 Mart - oynanacak)
+    { home: 'Fenerbahçe',     away: 'Gaziantep FK', date: '2026-03-17', time: '19:00', played: false },
+    { home: 'Alanyaspor',     away: 'Kocaelispor', date: '2026-03-18', time: '19:00', played: false },
+    { home: 'Başakşehir',     away: 'Antalyaspor', date: '2026-03-18', time: '21:00', played: false },
+    { home: 'Eyüpspor',       away: 'Trabzonspor', date: '2026-03-18', time: '21:00', played: false },
+    { home: 'Galatasaray',    away: 'Konyaspor',   date: '2026-03-19', time: '19:00', played: false },
+    { home: 'Kasımpaşa',      away: 'Göztepe',     date: '2026-03-19', time: '21:00', played: false },
+    { home: 'Rizespor',       away: 'Fatih Karagümrük', date: '2026-03-21', time: '19:00', played: false },
+    { home: 'Kayserispor',    away: 'Eyüpspor',    date: '2026-03-22', time: '19:00', played: false },
+  ];
+
+  return fixtures.map(f =>
+    `${f.date} ${f.time} | ${f.home} vs ${f.away}${f.played ? ' [OYNANDI]' : ''}`
+  ).join('\n');
+}
+
+// ── TICKER ────────────────────────────────────────────
+function updateTicker(){
+  const el=document.getElementById('tickerInner');
+  if(!el||!ALL.length) return;
+  el.textContent=ALL.map(m=>
+    `${m.flag||'⚽'} ${m.homeTeam} vs ${m.awayTeam}`+
+    (m.isLive?` 🔴 CANLI ${m.liveMinute||''}`:m.isPlayed?` ✅ ${m.result||'Oynandı'}`:'')+
+    ` · ${{home:'Ev',draw:'Ber',away:'Dep'}[m.prediction]} · %${m.confidence}`
+  ).join('   ·   ');
+}
+
+// ── STATS ─────────────────────────────────────────────
+function updateStats(){
+  const c={all:ALL.length,home:0,away:0,draw:0,over:0,under:0};
+  ALL.forEach(m=>{if(!m.isPlayed){c[m.prediction]++;c[m.goalPrediction]++;}});
+  ['all','home','away','draw','over','under'].forEach((k,i)=>{
+    const el=document.getElementById('sv'+i); if(el) el.textContent=c[k]||0;
+  });
+}
+
+// ── LEAGUE BAR ────────────────────────────────────────
+function buildLF(){
+  const fm={'Champions League':'🏆','Premier Lig':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','La Liga':'🇪🇸','Bundesliga':'🇩🇪','Ligue 1':'🇫🇷','Serie A':'🇮🇹','Süper Lig':'🇹🇷','Europa League':'🟠'};
+  const leagues=[...new Set(ALL.map(m=>m.league))];
+  document.getElementById('lfBar').innerHTML=
+    `<button class="lfb on" onclick="lf('all',this)">🌍 Tümü</button>`+
+    leagues.map(l=>`<button class="lfb" onclick="lf('${l.replace(/'/g,"\\'")}',this)">${fm[l]||'⚽'} ${l}</button>`).join('');
+}
+
+// ── FILTERS ───────────────────────────────────────────
+function sf(f,el){
+  SF=f;
+  document.querySelectorAll('.sc').forEach(c=>c.classList.remove('act'));
+  el.classList.add('act');
+  document.getElementById('secT').textContent={all:'Tüm Maçlar',home:'Ev Galibiyeti',away:'Deplasman Galibiyeti',draw:'Beraberlik',over:'2.5 Üst',under:'2.5 Alt'}[f];
+  render();
+}
+function lf(f,el){
+  LF=f;
+  document.querySelectorAll('.lfb').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  render();
+}
+
+// ── RENDER ────────────────────────────────────────────
+function render(){
+  const list=document.getElementById('matchList');
+  let items=LF==='all'?ALL:ALL.filter(m=>m.league===LF);
+  document.getElementById('mCntBadge').textContent=items.length+' maç';
+  if(!items.length){list.innerHTML=`<div class="stb"><div class="si">🔍</div><h3>Maç Bulunamadı</h3></div>`;return;}
+  list.innerHTML=items.map((m,i)=>card(m,i)).join('');
+  if(SF!=='all'){
+    document.querySelectorAll('.mc').forEach(el=>{
+      const m=ALL.find(x=>x.id==el.dataset.mid); if(!m)return;
+      const ok=(SF==='home'&&m.prediction==='home')||(SF==='away'&&m.prediction==='away')||(SF==='draw'&&m.prediction==='draw')||(SF==='over'&&m.goalPrediction==='over')||(SF==='under'&&m.goalPrediction==='under');
+      if(!ok) el.classList.add('dimmed');
+    });
+  }
+  setTimeout(()=>document.querySelectorAll('.c-fill').forEach(e=>e.style.width=e.dataset.w+'%'),60);
+}
+
+function card(m,i){
+  const pc={home:'ph',away:'pa',draw:'pd'}[m.prediction];
+  const pa={home:'h',away:'a',draw:'d'}[m.prediction];
+  const pl={home:'Ev Kazanır',draw:'Berabere',away:'Dep Kazanır'}[m.prediction];
+  const gl=m.goalPrediction==='over'?'2.5 Üst':'2.5 Alt';
+  const cc=m.confidence>=70?'hi':m.confidence>=50?'mi':'lo';
+  const fc=m.confidence>=70?'var(--g)':m.confidence>=50?'var(--y)':'var(--r)';
+  const tp=m.confidence>=78?'<span class="tp-b">⭐ Güçlü</span>':'';
+  const chk=SEL.has(m.id);
+  const wx=m.weather?`<div class="mc-wx">${m.weather}</div>`:'';
+  const inj=m.injuries?`<div class="mc-inj">🩹 ${m.injuries}</div>`:'';
+  let badge='';
+  if(m.isLive) badge=`<div class="live-b"><div class="ld"></div>🔴 CANLI${m.liveMinute?' · '+m.liveMinute:''}</div>`;
+  else if(m.isPlayed) badge=`<div class="played-b">✅ OYNANDI${m.result?' · '+m.result:''}</div>`;
+  const df=(()=>{try{return new Date(m.date+'T00:00:00').toLocaleDateString('tr-TR',{weekday:'short',day:'2-digit',month:'short'});}catch{return m.date||'—';}})();
+  return `
+  <div class="mc ${pc}${(m.isLive||m.isPlayed)?' has-s':''}" data-mid="${m.id}" style="animation-delay:${(i*.038).toFixed(2)}s">
+    ${badge}
+    <div class="chk${chk?' on':''}" onclick="toggleSel(${m.id},event)"></div>
+    <div class="mc-top">
+      <div>
+        <div class="mc-league">${m.flag||''} ${m.league}</div>
+        <div class="mc-date">${df}</div>
+        <div class="mc-time">${m.time}</div>
+        <span class="tag-sm">📊 İddaa</span>
+        ${wx}${inj}
+      </div>
+      <div>
+        <div class="tr"><div class="tn">${m.homeTeam}</div><div class="vs-t">VS</div><div class="tn aw">${m.awayTeam}</div>${tp}</div>
+        <div class="or">
+          <div class="op h"><span class="op-l">1 Ev</span><span class="op-v">${(+m.homeWinOdds).toFixed(2)}</span><span class="op-s">oran</span></div>
+          <div class="op d"><span class="op-l">X Ber</span><span class="op-v">${(+m.drawOdds).toFixed(2)}</span><span class="op-s">oran</span></div>
+          <div class="op a"><span class="op-l">2 Dep</span><span class="op-v">${(+m.awayWinOdds).toFixed(2)}</span><span class="op-s">oran</span></div>
+          <div class="dv"></div>
+          <div class="op ov"><span class="op-l">2.5 Üst</span><span class="op-v">${(+m.over25Odds).toFixed(2)}</span><span class="op-s">oran</span></div>
+          <div class="op un"><span class="op-l">2.5 Alt</span><span class="op-v">${(+m.under25Odds).toFixed(2)}</span><span class="op-s">oran</span></div>
+          <div class="ai-b"><div class="ai-lb">AI Tahmin</div><div class="ai-pr ${pa}">${pl}</div><div class="ai-gl">${gl}</div></div>
+        </div>
+        <div class="cr">
+          <span class="c-lb">Güven</span>
+          <div class="c-bar"><div class="c-fill" data-w="${m.confidence}" style="width:0%;background:linear-gradient(90deg,${fc},${fc}88)"></div></div>
+          <span class="c-pct ${cc}">${m.confidence}%</span>
+        </div>
+      </div>
+    </div>
+    <div class="scenarios">
+      <div class="sbox w"><div class="sbox-ttl w">✅ ${m.homeTeam} Kazanırsa</div><div class="sbox-txt">${m.winScenario||'—'}</div></div>
+      <div class="sbox l"><div class="sbox-ttl l">❌ ${m.awayTeam} Kazanırsa</div><div class="sbox-txt">${m.loseScenario||'—'}</div></div>
+      <div class="sbox dr"><div class="sbox-ttl dr">🟡 Berabere Kalırlarsa</div><div class="sbox-txt">${m.drawScenario||'—'}</div></div>
+    </div>
+  </div>`;
+}
+
+// ── CUSTOM SELECT ─────────────────────────────────────
+function toggleSel(id,e){
+  e.stopPropagation();
+  if(SEL.has(id)) SEL.delete(id); else SEL.add(id);
+  buildCustom();
+  document.querySelectorAll(`.mc[data-mid="${id}"] .chk`).forEach(el=>{
+    el.className='chk'+(SEL.has(id)?' on':'');
+  });
+}
+
+// ── COUPONS ───────────────────────────────────────────
+function buildCoupons(){
+  const active=ALL.filter(m=>!m.isPlayed&&!m.isLive);
+  const srt=[...active].sort((a,b)=>b.confidence-a.confidence);
+  rcp('s',srt.filter(m=>m.confidence>=70).slice(0,5));
+  rcp('m',srt.filter(m=>m.confidence>=50&&m.confidence<70).slice(0,5));
+  rcp('r',srt.filter(m=>m.confidence<50).slice(0,5));
+  buildCustom();
+}
+function buildCustom(){rcp('c',ALL.filter(m=>SEL.has(m.id)));}
+function rcp(t,items){
+  const cntId={s:'sCnt',m:'mCnt2',r:'rCnt',c:'cCnt'}[t];
+  const bodyId={s:'sBody',m:'mBody',r:'rBody',c:'cBody'}[t];
+  const totId={s:'sTot',m:'mTot',r:'rTot',c:'cTot'}[t];
+  const cnt=document.getElementById(cntId),body=document.getElementById(bodyId),tot=document.getElementById(totId);
+  if(!cnt) return;
+  cnt.textContent=items.length+' seç';
+  if(!items.length){
+    body.innerHTML=`<div class="cem"><div class="cem-i">${t==='c'?'☑️':'📋'}</div>${t==='c'?'Kart köşesini işaretle':'Analiz bekleniyor…'}</div>`;
+    tot.textContent='—'; cw(t); return;
+  }
+  body.innerHTML=items.map(m=>`
+  <div class="ci ${t}">
+    <div class="ci-t">${m.homeTeam} <span style="color:var(--mu);font-weight:400">vs</span> ${m.awayTeam}</div>
+    <div class="ci-r">
+      <div class="ci-p">
+        <span>${{home:'Ev',draw:'Ber',away:'Dep'}[m.prediction]}</span><span style="opacity:.3">·</span>
+        <span>${m.goalPrediction==='over'?'2.5Ü':'2.5A'}</span><span style="opacity:.3">·</span>
+        <span style="font-family:'DM Mono';font-size:7px">${m.confidence}%</span>
+      </div>
+      <div class="ci-o ${t}">${podd(m).toFixed(2)}</div>
+    </div>
+  </div>`).join('');
+  tot.textContent=items.reduce((a,m)=>a*podd(m),1).toFixed(2);
+  cw(t);
+}
+function podd(m){return m.prediction==='home'?+m.homeWinOdds:m.prediction==='away'?+m.awayWinOdds:+m.drawOdds;}
+function cw(t){
+  const totId={s:'sTot',m:'mTot',r:'rTot',c:'cTot'}[t];
+  const sk=parseFloat(document.getElementById('sk-'+t)?.value)||0;
+  const tv=parseFloat(document.getElementById(totId)?.textContent)||0;
+  const el=document.getElementById('cw-'+t);
+  if(el) el.textContent=(sk>0&&tv>0)?'₺'+(sk*tv).toFixed(2):'—';
+}
+
+// ── COUNTDOWN ─────────────────────────────────────────
+function startCD(s){
+  if(cdTimer) clearInterval(cdTimer);
+  const el=document.getElementById('cdBox');
+  cdTimer=setInterval(()=>{
+    s--;
+    if(el) el.textContent=`⟳ ${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+    if(s<=0){clearInterval(cdTimer);if(el) el.textContent='⟳ Güncelle';}
+  },1000);
+}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+</script>
+</body>
+</html>
