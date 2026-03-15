@@ -281,7 +281,8 @@ async function callAI(prompt) {
   if (isLocalFile) {
     throw new Error('Dosyayı doğrudan tarayıcıda açtınız. Lütfen siteyi Vercel\'e deploy edin.');
   }
-  throw new Error('API bağlantısı kurulamadı. Vercel\'de GEMINI_API_KEY environment variable\'ını kontrol edin.');
+  const errData = await res.json().catch(()=>({}));
+throw new Error('Hata ' + res.status + ': ' + (errData.error || 'bilinmiyor'));
 }
 
 // ── GO ────────────────────────────────────────────────
