@@ -270,13 +270,11 @@ async function callAI(prompt) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt })
       });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.text) return data.text;
-        if (data.error) throw new Error(data.error);
-      }
+      const data = await res.json();
+      if (res.ok && data.text) return data.text;
+      throw new Error(data.error || 'Sunucu hatası: ' + res.status);
     } catch(e) {
-      if (e.message && !e.message.includes('fetch')) throw e;
+      throw e;
     }
   }
 
