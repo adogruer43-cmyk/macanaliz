@@ -259,38 +259,31 @@ let ALL=[], SF='all', LF='all', SEL=new Set(), autoTimer=null, cdTimer=null;
 })();
 
 // ── API CALL ───────────────────────────────────────────
-// Vercel'de: /api/analyze proxy'sine gider (key gizli kalır)
-// file:/// açılışta veya başka ortamda: window.claude.complete() dener
+// Vercel'de: /api/analyze proxy'sine gider (Gemini key gizli kalır)
 async function callAI(prompt) {
-  const isVercel = window.location.protocol === 'https:' && !window.location.hostname.includes('localhost') && window.location.pathname !== '/';
   const isLocalFile = window.location.protocol === 'file:';
-  const hasProxy = !isLocalFile;
 
-  // Vercel veya herhangi bir web sunucusunda → proxy kullan
-  if (hasProxy) {
+  if (!isLocalFile) {
     try {
       const res = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: [{ role: 'user', content: prompt }] })
+        body: JSON.stringify({ prompt })
       });
       if (res.ok) {
         const data = await res.json();
-        if (!data.error) return (data.content||[]).map(i=>i.text||'').join('').trim();
+        if (data.text) return data.text;
+        if (data.error) throw new Error(data.error);
       }
-    } catch(e) { /* proxy başarısız, fallback dene */ }
+    } catch(e) {
+      if (e.message && !e.message.includes('fetch')) throw e;
+    }
   }
 
-  // file:// veya proxy başarısız → window.claude dene (claude.ai artifact)
-  if (typeof window.claude !== 'undefined' && typeof window.claude.complete === 'function') {
-    return await window.claude.complete(prompt);
-  }
-
-  // Hiçbiri çalışmadı → anlamlı hata
   if (isLocalFile) {
-    throw new Error('Dosyayı doğrudan tarayıcıda açtınız. Lütfen siteyi Vercel\'e deploy edin veya claude.ai\'da açın. Detaylar için README.md dosyasına bakın.');
+    throw new Error('Dosyayı doğrudan tarayıcıda açtınız. Lütfen siteyi Vercel\'e deploy edin.');
   }
-  throw new Error('API bağlantısı kurulamadı. Vercel\'de ANTHROPIC_API_KEY environment variable\'ını kontrol edin.');
+  throw new Error('API bağlantısı kurulamadı. Vercel\'de GEMINI_API_KEY environment variable\'ını kontrol edin.');
 }
 
 // ── GO ────────────────────────────────────────────────
