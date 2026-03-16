@@ -26,7 +26,7 @@ module.exports = async function handler(req, res) {
         'X-Title': 'MacAnaliz'
       },
       body: JSON.stringify({
-        model: 'meta-llama/llama-3.3-8b-instruct:free',
+        model: 'google/gemma-3-27b-it:free',
         messages: [{ role: 'user', content: prompt }],
         max_tokens: 8000
       })
