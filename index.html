@@ -281,8 +281,7 @@ async function callAI(prompt) {
   if (isLocalFile) {
     throw new Error('Dosyayı doğrudan tarayıcıda açtınız. Lütfen siteyi Vercel\'e deploy edin.');
   }
-  const errData = await res.json().catch(()=>({}));
-throw new Error('Hata ' + res.status + ': ' + (errData.error || 'bilinmiyor'));
+  throw new Error('API bağlantısı kurulamadı. Vercel\'de GEMINI_API_KEY environment variable\'ını kontrol edin.');
 }
 
 // ── GO ────────────────────────────────────────────────
@@ -356,17 +355,14 @@ async function runAI(){
 ZORUNLU: SÜPER LİG GERÇEK FİKSTÜRÜ (BUNLARI AYNEN KULLAN, DEĞİŞTİRME):
 ${slFixtures}
 
-Bu Süper Lig maçlarını listeye al. Ek olarak bu haftanın gerçek maçlarından ekle:
-🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier Lig | 🇪🇸 La Liga | 🇩🇪 Bundesliga | 🇮🇹 Serie A | 🏆 Şampiyonlar Ligi
-Toplam 16-20 maç.
+Bu Süper Lig maçlarını listeye al. Ek olarak 3-4 maç ekle: Premier Lig, La Liga veya Bundesliga.
+Toplam MAX 10 maç.
 
-Her maç için: son 5 maç formu, kafa kafaya geçmiş maçlar, hava durumu (şehir-sıcaklık-rüzgar), sakatlıklar/cezalılar, motivasyon/yorgunluk, ev avantajı.
+isPlayed:true sadece oynandıysa | isLive:true sadece şu an oynanıyorsa | varsayılan: false
+Oranlar 1.25-7.50 arası, 2 ondalık.
+winScenario/loseScenario/drawScenario max 8 kelime Türkçe.
 
-isPlayed:true → oynanmış result:"2-1" | isLive:true → şu an oynuyor liveMinute:"67'" | varsayılan: false
-
-Oranlar Mackolik/İddaa.com tarzı (1.25–7.50, 2 ondalık).
-
-SADECE JSON, başka hiçbir şey:
+SADECE JSON yanıt ver, başka hiçbir şey yazma:
 {"matches":[{"id":1,"league":"Süper Lig","flag":"🇹🇷","homeTeam":"Fenerbahçe","awayTeam":"Gaziantep FK","date":"2026-03-17","time":"19:00","homeWinOdds":1.35,"drawOdds":4.50,"awayWinOdds":7.00,"over25Odds":1.60,"under25Odds":2.25,"prediction":"home","goalPrediction":"over","confidence":82,"weather":"🌤️ 14°C açık rüzgar 12km/s","injuries":"⚠️ Crespo şüpheli","winScenario":"Fenerbahçe evinde bu sezon sadece 1 maç kaybetti. Osimhen formda.","loseScenario":"Gaziantep deplasmanda sürpriz yapabilir.","drawScenario":"Fenerbahçe tempo düşürürse Gaziantep puanı kurtarabilir.","isPlayed":false,"isLive":false,"result":null,"liveMinute":null}]}`;
 
   const raw = await callAI(prompt);
