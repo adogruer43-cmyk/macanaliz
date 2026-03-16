@@ -365,14 +365,21 @@ winScenario/loseScenario/drawScenario max 8 kelime Türkçe.
 SADECE JSON yanıt ver, başka hiçbir şey yazma:
 {"matches":[{"id":1,"league":"Süper Lig","flag":"🇹🇷","homeTeam":"Fenerbahçe","awayTeam":"Gaziantep FK","date":"2026-03-17","time":"19:00","homeWinOdds":1.35,"drawOdds":4.50,"awayWinOdds":7.00,"over25Odds":1.60,"under25Odds":2.25,"prediction":"home","goalPrediction":"over","confidence":82,"weather":"🌤️ 14°C açık rüzgar 12km/s","injuries":"⚠️ Crespo şüpheli","winScenario":"Fenerbahçe evinde bu sezon sadece 1 maç kaybetti. Osimhen formda.","loseScenario":"Gaziantep deplasmanda sürpriz yapabilir.","drawScenario":"Fenerbahçe tempo düşürürse Gaziantep puanı kurtarabilir.","isPlayed":false,"isLive":false,"result":null,"liveMinute":null}]}`;
 
-  const raw = await callAI(prompt);
-  const clean=raw.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/\s*```$/i,'').trim();
-  const jMatch=clean.match(/\{[\s\S]*\}/);
-  if(!jMatch) throw new Error('JSON bulunamadı. Tekrar deneyin.');
-  let parsed;
-  try{ parsed=JSON.parse(jMatch[0]); }
-  catch(e){ throw new Error('JSON parse hatası: '+e.message.slice(0,80)); }
-  if(!parsed.matches?.length) throw new Error('Maç listesi boş. Tekrar deneyin.');
+  let parsed = null;
+  for(let attempt=0; attempt<3; attempt++){
+    try{
+      const raw = await callAI(prompt);
+      const clean=raw.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/\s*```$/i,'').trim();
+      const jMatch=clean.match(/\{[\s\S]*\}/);
+      if(!jMatch) { if(attempt<2) continue; throw new Error('JSON bulunamadı.'); }
+      parsed=JSON.parse(jMatch[0]);
+      if(parsed.matches?.length) break;
+    }catch(e){
+      if(attempt===2) throw new Error('3 denemede başarısız: '+e.message.slice(0,60));
+      await sleep(1000);
+    }
+  }
+  if(!parsed?.matches?.length) throw new Error('Maç listesi boş. Tekrar deneyin.');
 
   ALL=parsed.matches;
   const upd=document.getElementById('lastUpd');
