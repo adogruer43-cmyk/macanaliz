@@ -356,104 +356,159 @@ async function runAI(){
   const dateStr = now.toLocaleDateString('tr-TR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   const timeStr = now.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
 
-  step(0,20,'Gerçek maç verileri alınıyor…'); await sleep(300);
+  step(0,15,'Gerçek maç verileri alınıyor…'); await sleep(400);
 
-  let fixtures = [];
-  try { fixtures = await fetchFixtures(); } catch(e) { console.warn('Fikstür alınamadı:', e.message); }
+  // 1. AllSports'tan gerçek maçlar + oranlar
+  let asMatches = [];
+  try {
+    const asRes = await fetch('/api/analyze', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ type: 'allsports' })
+    });
+    const asData = await asRes.json();
+    asMatches = asData.matches || [];
+  } catch(e) { console.warn('AllSports hatası:', e.message); }
 
-  step(1,50,'AI analizi yapılıyor…'); await sleep(200);
+  // 2. Football-data'dan tarih/saat/skor
+  let fdMatches = [];
+  try {
+    const fdRes = await fetch('/api/analyze', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ type: 'fixtures' })
+    });
+    const fdData = await fdRes.json();
+    fdMatches = fdData.matches || [];
+  } catch(e) { console.warn('FD hatası:', e.message); }
 
-  let matches = [];
+  step(1,40,'Veriler işleniyor…'); await sleep(300);
 
-  if (fixtures.length > 0) {
-    const fixtureList = fixtures.map((m,i) => {
-      const comp = m.competition?.code || '';
-      const status = m.status;
-      const isLive = status==='IN_PLAY'||status==='PAUSED';
-      const isPlayed = status==='FINISHED';
-      const score = (isLive||isPlayed) && m.score?.fullTime
-        ? `${m.score.fullTime.home??0}-${m.score.fullTime.away??0}` : '';
-      return `${i+1}. [${compName(comp)}] ${m.homeTeam?.name} vs ${m.awayTeam?.name} | ${toDate(m.utcDate)} ${toTR(m.utcDate)}${isPlayed?' [BİTTİ skor:'+score+']':isLive?' [CANLI '+score+']':''}`;
-    }).join('
+  // Birleştir: AllSports ana kaynak, FD skor/durum için
+  const sourceMatches = asMatches.length > 0 ? asMatches : fdMatches;
+
+  if (!sourceMatches.length) throw new Error('Maç verisi alınamadı. Lütfen tekrar deneyin.');
+
+  // Maç listesini AI için hazırla
+  const fixtureList = sourceMatches.slice(0,12).map((m,i) => {
+    // AllSports formatı
+    if (m.event_home_team) {
+      const league = m.league_name || '?';
+      const home = m.event_home_team;
+      const away = m.event_away_team;
+      const date = m.event_date || '';
+      const time = m.event_time || '';
+      const homeForm = m.home_team_form || '';
+      const awayForm = m.away_team_form || '';
+      const homeScore = m.event_final_result?.split(' - ')?.[0] ?? null;
+      const awayScore = m.event_final_result?.split(' - ')?.[1] ?? null;
+      const status = m.event_status;
+      const homeOdd = m.homeOdd ? parseFloat(m.homeOdd).toFixed(2) : null;
+      const drawOdd = m.drawOdd ? parseFloat(m.drawOdd).toFixed(2) : null;
+      const awayOdd = m.awayOdd ? parseFloat(m.awayOdd).toFixed(2) : null;
+      const overOdd = m.overOdd ? parseFloat(m.overOdd).toFixed(2) : null;
+      const underOdd = m.underOdd ? parseFloat(m.underOdd).toFixed(2) : null;
+      return `${i+1}. [${league}] ${home} vs ${away} | ${date} ${time}` +
+        (homeForm?` | Ev form:${homeForm}`:'') +
+        (awayForm?` | Dep form:${awayForm}`:'') +
+        (homeOdd?` | Oranlar: 1=${homeOdd} X=${drawOdd} 2=${awayOdd} Üst=${overOdd} Alt=${underOdd}`:'') +
+        (status==='Finished'?` | BITTI: ${m.event_final_result}`:'') +
+        (status==='inprogress'?` | CANLI: ${m.event_final_result}`:'');
+    }
+    // FD formatı
+    const comp = m.competition?.code || '';
+    const status = m.status;
+    const score = m.score?.fullTime ? `${m.score.fullTime.home??0}-${m.score.fullTime.away??0}` : '';
+    return `${i+1}. [${compName(comp)}] ${m.homeTeam?.name} vs ${m.awayTeam?.name} | ${toDate(m.utcDate)} ${toTR(m.utcDate)}` +
+      (status==='FINISHED'?` | BİTTİ: ${score}`:'') +
+      (status==='IN_PLAY'?` | CANLI: ${score}`:'');
+  }).join('
 ');
 
-    step(2,75,'Tahminler üretiliyor…'); await sleep(200);
+  step(2,65,'AI analiz yapıyor…'); await sleep(300);
 
-    const prompt = `Bugün: ${dateStr} ${timeStr} Türkiye saati.
-Şu gerçek maçlar için JSON üret:
+  const prompt = `Sen profesyonel futbol analiz uzmanısın. Bugün: ${dateStr} ${timeStr} (Türkiye saati).
+
+Aşağıdaki GERÇEK maç verileri var (lig, takımlar, tarih, form, oranlar):
 ${fixtureList}
 
-Her maç için: prediction(home/draw/away), goalPrediction(over/under), confidence(40-95), homeWinOdds, drawOdds, awayWinOdds, over25Odds, under25Odds (1.20-7.50), weather(emoji+şehir+derece), injuries(null veya kısa), winScenario/loseScenario/drawScenario (max 6 kelime Türkçe).
+Bu verileri kullanarak her maç için analiz yap. Form verisi varsa onu kullan (W=galibiyet, D=beraberlik, L=mağlubiyet).
+Oranlar verilmişse aynen kullan, verilmemişse tahmin et (1.20-7.50 arası).
 
-SADECE JSON:
-{"matches":[{"id":1,"league":"Süper Lig","flag":"🇹🇷","homeTeam":"Fenerbahçe","awayTeam":"Gaziantep FK","date":"2026-03-17","time":"19:00","homeWinOdds":1.45,"drawOdds":4.00,"awayWinOdds":6.00,"over25Odds":1.65,"under25Odds":2.20,"prediction":"home","goalPrediction":"over","confidence":80,"weather":"🌤️ İstanbul 14°C","injuries":null,"winScenario":"Ev baskısı belirleyici.","loseScenario":"Gaziantep kontr.","drawScenario":"Dengeli tempo.","isPlayed":false,"isLive":false,"result":null,"liveMinute":null}]}`;
+Tahmin mantığı:
+- Form üstün olan takıma yüksek güven ver
+- Ev avantajı %10-15 ekle
+- Oranlar düşükse (1.20-1.50) yüksek güven (75-90%)
+- Oranlar yüksekse (3.00+) düşük güven (40-55%)
 
-    step(3,90,'Son dokunuşlar…'); await sleep(200);
+SADECE JSON yanıt ver:
+{"matches":[{"id":1,"league":"Süper Lig","flag":"🇹🇷","homeTeam":"Fenerbahçe","awayTeam":"Gaziantep FK","date":"2026-03-17","time":"19:00","homeWinOdds":1.45,"drawOdds":4.00,"awayWinOdds":6.00,"over25Odds":1.65,"under25Odds":2.20,"prediction":"home","goalPrediction":"over","confidence":82,"weather":"🌤️ İstanbul 14°C","injuries":null,"winScenario":"Form üstünlüğü belirleyici.","loseScenario":"Gaziantep kontr oynayabilir.","drawScenario":"Tempo düşerse beraberlik.","isPlayed":false,"isLive":false,"result":null,"liveMinute":null}]}`;
 
-    let aiMatches = null;
-    for(let attempt=0; attempt<3; attempt++){
-      try{
-        const raw = await callAI(prompt);
-        const clean = raw.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/\s*```$/i,'').trim();
-        const jMatch = clean.match(/\{[\s\S]*\}/);
-        if(!jMatch){ if(attempt<2){await sleep(800);continue;} throw new Error('JSON bulunamadı.'); }
-        aiMatches = JSON.parse(jMatch[0]);
-        if(aiMatches.matches?.length) break;
-      } catch(e){
-        if(attempt===2) throw new Error('AI hatası: '+e.message.slice(0,60));
-        await sleep(1000);
-      }
+  step(3,88,'Son dokunuşlar…'); await sleep(200);
+
+  let matches = [];
+  for(let attempt=0; attempt<3; attempt++){
+    try{
+      const raw = await callAI(prompt);
+      const clean = raw.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/\s*```$/i,'').trim();
+      const jMatch = clean.match(/\{[\s\S]*\}/);
+      if(!jMatch){ if(attempt<2){await sleep(800);continue;} throw new Error('JSON bulunamadı.'); }
+      const parsed = JSON.parse(jMatch[0]);
+      if(parsed.matches?.length){ matches = parsed.matches; break; }
+    } catch(e){
+      if(attempt===2) throw new Error('AI hatası: '+e.message.slice(0,80));
+      await sleep(1000);
     }
+  }
 
-    matches = (aiMatches?.matches||[]).map((aiM, i) => {
-      const real = fixtures[i];
-      if (!real) return aiM;
-      const status = real.status;
-      const isLive = status==='IN_PLAY'||status==='PAUSED';
-      const isPlayed = status==='FINISHED';
-      const result = (isLive||isPlayed) && real.score?.fullTime
-        ? `${real.score.fullTime.home??0}-${real.score.fullTime.away??0}` : null;
+  // Gerçek tarih/saat/skor ile güncelle
+  matches = matches.map((aiM, i) => {
+    const src = sourceMatches[i];
+    if (!src) return aiM;
+
+    // AllSports formatı
+    if (src.event_home_team) {
+      const status = src.event_status;
+      const isLive = status === 'inprogress';
+      const isPlayed = status === 'Finished';
+      const result = src.event_final_result || null;
+      // Parse date DD/MM/YYYY → YYYY-MM-DD
+      let date = aiM.date;
+      if (src.event_date) {
+        const parts = src.event_date.split('/');
+        if (parts.length === 3) date = `${parts[2]}-${parts[1]}-${parts[0]}`;
+      }
       return {
         ...aiM,
-        id: real.id || aiM.id,
-        homeTeam: real.homeTeam?.shortName || real.homeTeam?.name || aiM.homeTeam,
-        awayTeam: real.awayTeam?.shortName || real.awayTeam?.name || aiM.awayTeam,
-        date: toDate(real.utcDate) || aiM.date,
-        time: toTR(real.utcDate) || aiM.time,
+        homeTeam: src.event_home_team || aiM.homeTeam,
+        awayTeam: src.event_away_team || aiM.awayTeam,
+        date,
+        time: src.event_time || aiM.time,
         isLive, isPlayed,
-        result,
-        liveMinute: real.minute ? real.minute+"'" : null,
+        result: (isLive||isPlayed) ? result : null,
+        liveMinute: isLive ? (src.event_status_info||null) : null,
+        homeWinOdds: src.homeOdd ? parseFloat(src.homeOdd) : aiM.homeWinOdds,
+        drawOdds: src.drawOdd ? parseFloat(src.drawOdd) : aiM.drawOdds,
+        awayWinOdds: src.awayOdd ? parseFloat(src.awayOdd) : aiM.awayWinOdds,
+        over25Odds: src.overOdd ? parseFloat(src.overOdd) : aiM.over25Odds,
+        under25Odds: src.underOdd ? parseFloat(src.underOdd) : aiM.under25Odds,
       };
-    });
-
-  } else {
-    // football-data yok, sadece AI
-    step(2,75,'AI fikstür oluşturuyor…'); await sleep(200);
-    const prompt = `Bugün: ${dateStr} ${timeStr} Türkiye.
-Süper Lig + Premier Lig + La Liga + Bundesliga, MAX 10 maç.
-Sadece bugünden itibaren 7 günlük maçlar. Gerçek tarih/saat kullan (TR saati).
-isPlayed false, isLive false.
-winScenario/loseScenario/drawScenario max 6 kelime Türkçe.
-SADECE JSON:
-{"matches":[{"id":1,"league":"Süper Lig","flag":"🇹🇷","homeTeam":"Fenerbahçe","awayTeam":"Gaziantep FK","date":"2026-03-17","time":"19:00","homeWinOdds":1.45,"drawOdds":4.00,"awayWinOdds":6.00,"over25Odds":1.65,"under25Odds":2.20,"prediction":"home","goalPrediction":"over","confidence":80,"weather":"🌤️ İstanbul 14°C","injuries":null,"winScenario":"Ev baskısı belirleyici.","loseScenario":"Gaziantep kontr.","drawScenario":"Dengeli tempo.","isPlayed":false,"isLive":false,"result":null,"liveMinute":null}]}`;
-
-    step(3,90,'Son dokunuşlar…'); await sleep(200);
-    let parsed = null;
-    for(let attempt=0; attempt<3; attempt++){
-      try{
-        const raw = await callAI(prompt);
-        const clean = raw.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/\s*```$/i,'').trim();
-        const jMatch = clean.match(/\{[\s\S]*\}/);
-        if(!jMatch){ if(attempt<2){await sleep(800);continue;} throw new Error('JSON bulunamadı.'); }
-        parsed = JSON.parse(jMatch[0]);
-        if(parsed.matches?.length) break;
-      } catch(e){
-        if(attempt===2) throw new Error('AI hatası: '+e.message.slice(0,60));
-        await sleep(1000);
-      }
     }
-    matches = parsed?.matches || [];
-  }
+
+    // FD formatı
+    const status = src.status;
+    const isLive = status==='IN_PLAY'||status==='PAUSED';
+    const isPlayed = status==='FINISHED';
+    const result = (isLive||isPlayed) && src.score?.fullTime
+      ? `${src.score.fullTime.home??0}-${src.score.fullTime.away??0}` : null;
+    return {
+      ...aiM,
+      homeTeam: src.homeTeam?.shortName||src.homeTeam?.name||aiM.homeTeam,
+      awayTeam: src.awayTeam?.shortName||src.awayTeam?.name||aiM.awayTeam,
+      date: toDate(src.utcDate)||aiM.date,
+      time: toTR(src.utcDate)||aiM.time,
+      isLive, isPlayed, result,
+      liveMinute: src.minute ? src.minute+"'" : null,
+    };
+  });
 
   // Oynanan maçları filtrele
   const today = new Date(); today.setHours(0,0,0,0);
