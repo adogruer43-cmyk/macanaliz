@@ -455,11 +455,11 @@ SADECE JSON:
         isLive, isPlayed,
         result: (isLive||isPlayed) ? src.event_final_result : null,
         liveMinute: isLive ? (src.event_status_info||null) : null,
-        homeWinOdds: src.homeOdd ? +src.homeOdd : aiM.homeWinOdds,
-        drawOdds: src.drawOdd ? +src.drawOdd : aiM.drawOdds,
-        awayWinOdds: src.awayOdd ? +src.awayOdd : aiM.awayWinOdds,
-        over25Odds: src.overOdd ? +src.overOdd : aiM.over25Odds,
-        under25Odds: src.underOdd ? +src.underOdd : aiM.under25Odds,
+        homeWinOdds: (src.homeOdd && !isNaN(+src.homeOdd)) ? +src.homeOdd : aiM.homeWinOdds,
+        drawOdds: (src.drawOdd && !isNaN(+src.drawOdd)) ? +src.drawOdd : aiM.drawOdds,
+        awayWinOdds: (src.awayOdd && !isNaN(+src.awayOdd)) ? +src.awayOdd : aiM.awayWinOdds,
+        over25Odds: (src.overOdd && !isNaN(+src.overOdd)) ? +src.overOdd : aiM.over25Odds,
+        under25Odds: (src.underOdd && !isNaN(+src.underOdd)) ? +src.underOdd : aiM.under25Odds,
       };
     }
     const isLive = src.status==='IN_PLAY'||src.status==='PAUSED';
@@ -582,12 +582,12 @@ function card(m,i){
       <div>
         <div class="tr"><div class="tn">${m.homeTeam}</div>${(m.isLive||m.isPlayed)&&m.result?`<div class="score-badge${m.isLive?' live':''}">${m.result}</div>`:`<div class="vs-t">VS</div>`}<div class="tn aw">${m.awayTeam}</div>${tp}</div>
         <div class="or">
-          <div class="op h"><span class="op-l">1 Ev</span><span class="op-v">${(+m.homeWinOdds).toFixed(2)}</span><span class="op-s">oran</span></div>
-          <div class="op d"><span class="op-l">X Ber</span><span class="op-v">${(+m.drawOdds).toFixed(2)}</span><span class="op-s">oran</span></div>
-          <div class="op a"><span class="op-l">2 Dep</span><span class="op-v">${(+m.awayWinOdds).toFixed(2)}</span><span class="op-s">oran</span></div>
+          <div class="op h"><span class="op-l">1 Ev</span><span class="op-v">${isNaN(+m.homeWinOdds)?'—':(+m.homeWinOdds).toFixed(2)}</span><span class="op-s">oran</span></div>
+          <div class="op d"><span class="op-l">X Ber</span><span class="op-v">${isNaN(+m.drawOdds)?'—':(+m.drawOdds).toFixed(2)}</span><span class="op-s">oran</span></div>
+          <div class="op a"><span class="op-l">2 Dep</span><span class="op-v">${isNaN(+m.awayWinOdds)?'—':(+m.awayWinOdds).toFixed(2)}</span><span class="op-s">oran</span></div>
           <div class="dv"></div>
-          <div class="op ov"><span class="op-l">2.5 Üst</span><span class="op-v">${(+m.over25Odds).toFixed(2)}</span><span class="op-s">oran</span></div>
-          <div class="op un"><span class="op-l">2.5 Alt</span><span class="op-v">${(+m.under25Odds).toFixed(2)}</span><span class="op-s">oran</span></div>
+          <div class="op ov"><span class="op-l">2.5 Üst</span><span class="op-v">${isNaN(+m.over25Odds)?'—':(+m.over25Odds).toFixed(2)}</span><span class="op-s">oran</span></div>
+          <div class="op un"><span class="op-l">2.5 Alt</span><span class="op-v">${isNaN(+m.under25Odds)?'—':(+m.under25Odds).toFixed(2)}</span><span class="op-s">oran</span></div>
           <div class="ai-b"><div class="ai-lb">AI Tahmin</div><div class="ai-pr ${pa}">${pl}</div><div class="ai-gl">${gl}</div></div>
         </div>
         <div class="cr">
