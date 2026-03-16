@@ -26,7 +26,7 @@ module.exports = async function handler(req, res) {
         'X-Title': 'MacAnaliz'
       },
       body: JSON.stringify({
-        model: 'deepseek/deepseek-r1-0528:free',
+        model: 'openrouter/auto',
         messages: [{ role: 'user', content: prompt }],
         max_tokens: 8000
       })
