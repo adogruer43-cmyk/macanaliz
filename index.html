@@ -26,9 +26,9 @@ header{position:sticky;top:0;z-index:300;background:rgba(7,9,11,.96);backdrop-fi
 .logo{font-family:'Bebas Neue';font-size:26px;letter-spacing:3px;color:var(--g)}
 .logo span{color:var(--tx)}
 .pro-b{background:linear-gradient(135deg,var(--g),#00c07a);color:#000;font-size:8px;font-weight:900;padding:2px 7px;border-radius:20px;letter-spacing:1.5px}
-.wk{font-family:'DM Mono';font-size:12px;color:var(--mu2);border:1px solid var(--b1);padding:3px 9px;border-radius:5px}
+.wk{font-family:'DM Mono';font-size:10px;color:var(--mu2);border:1px solid var(--b1);padding:3px 9px;border-radius:5px}
 .hdr-r{margin-left:auto;display:flex;align-items:center;gap:8px}
-.cd-box{font-family:'DM Mono';font-size:12px;color:var(--mu2);border:1px solid var(--b1);padding:3px 9px;border-radius:5px;cursor:pointer;transition:all .2s}
+.cd-box{font-family:'DM Mono';font-size:10px;color:var(--mu2);border:1px solid var(--b1);padding:3px 9px;border-radius:5px;cursor:pointer;transition:all .2s}
 .cd-box:hover{border-color:var(--g);color:var(--g)}
 .go-btn{background:var(--g);color:#000;border:none;padding:7px 20px;border-radius:8px;font-family:'DM Sans';font-weight:800;font-size:15px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:transform .15s,opacity .15s}
 .go-btn:hover{opacity:.85;transform:translateY(-1px)}
@@ -63,7 +63,7 @@ main{position:relative;z-index:1;max-width:1340px;margin:0 auto;padding:20px 18p
 .sh-b{font-family:'DM Mono';font-size:11px;color:var(--mu);background:var(--s2);border:1px solid var(--b1);padding:2px 7px;border-radius:3px}
 
 .lf{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
-.lfb{background:var(--s1);border:1px solid var(--b1);color:var(--mu2);padding:5px 13px;border-radius:18px;font-size:11px;font-weight:700;cursor:pointer;transition:all .15s}
+.lfb{background:var(--s1);border:1px solid var(--b1);color:var(--mu2);padding:4px 11px;border-radius:18px;font-size:11px;font-weight:700;cursor:pointer;transition:all .15s}
 .lfb:hover,.lfb.on{background:rgba(0,229,160,.08);border-color:var(--g);color:var(--g)}
 
 .ml{display:flex;flex-direction:column;gap:7px}
@@ -89,7 +89,7 @@ main{position:relative;z-index:1;max-width:1340px;margin:0 auto;padding:20px 18p
 .mc-league{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--g);font-weight:700;margin-bottom:2px}
 .mc-date{font-family:'DM Mono';font-size:11px;color:var(--mu2)}
 .mc-time{font-family:'DM Mono';font-size:24px;font-weight:500;color:var(--tx);line-height:1;margin:2px 0 5px}
-.tag-sm{font-size:9px;padding:2px 6px;border:1px solid var(--b1);border-radius:2px;display:inline-block;color:var(--mu)}
+.tag-sm{font-size:9px;padding:1px 5px;border:1px solid var(--b1);border-radius:2px;display:inline-block;color:var(--mu)}
 .mc-wx{font-size:11px;color:var(--mu2);margin-top:5px;line-height:1.5}
 .mc-inj{font-size:10px;color:var(--r);opacity:.85;margin-top:2px;line-height:1.4}
 
@@ -185,6 +185,11 @@ main{position:relative;z-index:1;max-width:1340px;margin:0 auto;padding:20px 18p
 .disc{margin-top:18px;background:rgba(245,197,66,.04);border:1px solid rgba(245,197,66,.14);border-radius:9px;padding:10px 15px;display:flex;gap:8px;align-items:flex-start;font-size:11px;color:var(--mu);line-height:1.55}
 .disc strong{color:var(--y)}
 
+
+.played-b{position:absolute;top:9px;left:9px;z-index:10;background:rgba(255,69,87,.15);color:var(--r);font-family:'DM Mono';font-size:8px;font-weight:700;padding:3px 8px;border-radius:3px;border:1px solid rgba(255,69,87,.4);display:flex;align-items:center;gap:4px}
+.rec-dot{width:7px;height:7px;border-radius:50%;background:var(--r);animation:bk 1s infinite}
+.score-badge{font-family:'Bebas Neue';font-size:22px;color:var(--tx);background:var(--s2);border:1px solid var(--b1);padding:2px 10px;border-radius:6px;line-height:1}
+.score-badge.live{border-color:var(--r);color:var(--r)}
 @media(max-width:880px){.lay{grid-template-columns:1fr}.cpan{position:static;max-height:none}.sg{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:520px){.sg{grid-template-columns:repeat(2,1fr)}.mc-top{grid-template-columns:1fr}.scenarios{grid-template-columns:1fr}header{gap:6px}.wk{display:none}}
 </style>
@@ -237,7 +242,7 @@ main{position:relative;z-index:1;max-width:1340px;margin:0 auto;padding:20px 18p
     </div>
 
     <div class="cpan">
-      <div class="cs"><div class="csh s"><span class="csh-i">🟢</span><span class="csh-t">Güvenli Kupon</span><span class="csh-c" id="sCnt">0 seç</span></div><div class="cbody" id="sBody"><div class="cem"><div class="cem-i">📋</div>Analiz bekleniyor…</div></div><div class="ctot"><span class="ctot-l">Toplam Oran</span><span class="ctot-v s" id="sTot">—</span></div><div class="cst"><div class="cst-l">Bahis (₺)</div><input class="cst-i" id="sk-s" type="number" value="100" oninput="cw('s')"><div class="cwin">Kazanç: <span class="s" id="cw-s">—</span></div></div></div><div class="ctot"><span class="ctot-l">Toplam Oran</span><span class="ctot-v m" id="mTot">—</span></div><div class="cst"><div class="cst-l">Bahis (₺)</div><input class="cst-i" id="sk-m" type="number" value="100" oninput="cw('m')"><div class="cwin">Kazanç: <span class="m" id="cw-m">—</span></div></div></div><div class="ctot"><span class="ctot-l">Toplam Oran</span><span class="ctot-v r" id="rTot">—</span></div><div class="cst"><div class="cst-l">Bahis (₺)</div><input class="cst-i" id="sk-r" type="number" value="100" oninput="cw('r')"><div class="cwin">Kazanç: <span class="r" id="cw-r">—</span></div></div></div>
+      <div class="cs"><div class="csh s"><span class="csh-i">🟢</span><span class="csh-t">Güvenli Kupon</span><span class="csh-c" id="sCnt">0 seç</span></div><div class="cbody" id="sBody"><div class="cem"><div class="cem-i">📋</div>Analiz bekleniyor…</div></div><div class="ctot"><span class="ctot-l">Toplam Oran</span><span class="ctot-v s" id="sTot">—</span></div><div class="cst"><div class="cst-l">Bahis (₺)</div><input class="cst-i" id="sk-s" type="number" value="100" oninput="cw('s')"><div class="cwin">Kazanç: <span class="s" id="cw-s">—</span></div></div></div>
       <div class="cs"><div class="csh c"><span class="csh-i">⭐</span><span class="csh-t">Kendi Kuponum</span><span class="csh-c" id="cCnt">0 seç</span></div><div class="cbody" id="cBody"><div class="cem"><div class="cem-i">☑️</div>Kart köşesini işaretle</div></div><div class="ctot"><span class="ctot-l">Toplam Oran</span><span class="ctot-v c" id="cTot">—</span></div><div class="cst"><div class="cst-l">Bahis (₺)</div><input class="cst-i" id="sk-c" type="number" value="100" oninput="cw('c')"><div class="cwin">Kazanç: <span class="c" id="cw-c">—</span></div></div></div>
     </div>
   </div>
@@ -257,29 +262,43 @@ let ALL=[], SF='all', LF='all', SEL=new Set(), autoTimer=null, cdTimer=null;
 })();
 
 // ── API CALL ───────────────────────────────────────────
-// Vercel'de: /api/analyze proxy'sine gider (Gemini key gizli kalır)
+// Vercel'de: /api/analyze proxy'sine gider (key gizli kalır)
+// file:/// açılışta veya başka ortamda: window.claude.complete() dener
 async function callAI(prompt) {
-  const isLocalFile = window.location.protocol === 'file:';
+  const res = await fetch('/api/analyze', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt })
+  });
+  const data = await res.json();
+  if (res.ok && data.text) return data.text;
+  throw new Error(data.error || 'Sunucu hatası: ' + res.status);
+}
 
-  if (!isLocalFile) {
-    try {
-      const res = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt })
-      });
-      const data = await res.json();
-      if (res.ok && data.text) return data.text;
-      throw new Error(data.error || 'Sunucu hatası: ' + res.status);
-    } catch(e) {
-      throw e;
-    }
-  }
+async function fetchFixtures() {
+  const res = await fetch('/api/analyze', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ type: 'fixtures' })
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Fikstür alınamadı');
+  return data.matches || [];
+}
 
-  if (isLocalFile) {
-    throw new Error('Dosyayı doğrudan tarayıcıda açtınız. Lütfen siteyi Vercel\'e deploy edin.');
-  }
-  throw new Error('API bağlantısı kurulamadı. Vercel\'de GEMINI_API_KEY environment variable\'ını kontrol edin.');
+function compName(code) {
+  const m = {TR1:'Süper Lig',PL:'Premier Lig',PD:'La Liga',BL1:'Bundesliga',SA:'Serie A',FL1:'Ligue 1',CL:'Şampiyonlar Ligi'};
+  return m[code] || code;
+}
+function compFlag(code) {
+  const m = {TR1:'🇹🇷',PL:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',PD:'🇪🇸',BL1:'🇩🇪',SA:'🇮🇹',FL1:'🇫🇷',CL:'🏆'};
+  return m[code] || '⚽';
+}
+function toTR(utc) {
+  try { return new Date(utc).toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Istanbul'}); } catch{return '?';}
+}
+function toDate(utc) {
+  try { const d=new Date(utc); d.setHours(d.getHours()+3); return d.toISOString().split('T')[0]; } catch{return '';}
 }
 
 // ── GO ────────────────────────────────────────────────
@@ -333,269 +352,119 @@ function showError(msg){
 
 // ── AI ANALYSIS ───────────────────────────────────────
 async function runAI(){
-  const now=new Date();
-  const dateStr=now.toLocaleDateString('tr-TR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-  const timeStr=now.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
-  const from=now.toISOString().split('T')[0];
-  const toD=new Date(now); toD.setDate(now.getDate()+7);
-  const to=toD.toISOString().split('T')[0];
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('tr-TR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const timeStr = now.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
 
-  step(0,15,'Fikstür hazırlanıyor…');  await sleep(300);
-  step(1,35,'Oranlar hesaplanıyor…'); await sleep(300);
-  step(2,55,'Hava durumu…');           await sleep(250);
-  step(3,72,'Sakatlık bilgileri…');    await sleep(250);
-  step(4,88,'AI yazıyor…');
+  step(0,20,'Gerçek maç verileri alınıyor…'); await sleep(300);
 
-  const slFixtures = getSuperLigFixtures(now);
+  let fixtures = [];
+  try { fixtures = await fetchFixtures(); } catch(e) { console.warn('Fikstür alınamadı:', e.message); }
 
-  const prompt=`Sen elit bir futbol analiz yapay zekasısın. Bugün: ${dateStr}, saat ${timeStr} (Türkiye). Hafta: ${from}–${to}.
+  step(1,50,'AI analizi yapılıyor…'); await sleep(200);
 
-ZORUNLU: SÜPER LİG GERÇEK FİKSTÜRÜ (BUNLARI AYNEN KULLAN, DEĞİŞTİRME):
-${slFixtures}
+  let matches = [];
 
-Bu Süper Lig maçlarını listeye al. Ek olarak 3-4 maç ekle: Premier Lig, La Liga veya Bundesliga.
-Toplam MAX 10 maç.
+  if (fixtures.length > 0) {
+    const fixtureList = fixtures.map((m,i) => {
+      const comp = m.competition?.code || '';
+      const status = m.status;
+      const isLive = status==='IN_PLAY'||status==='PAUSED';
+      const isPlayed = status==='FINISHED';
+      const score = (isLive||isPlayed) && m.score?.fullTime
+        ? `${m.score.fullTime.home??0}-${m.score.fullTime.away??0}` : '';
+      return `${i+1}. [${compName(comp)}] ${m.homeTeam?.name} vs ${m.awayTeam?.name} | ${toDate(m.utcDate)} ${toTR(m.utcDate)}${isPlayed?' [BİTTİ skor:'+score+']':isLive?' [CANLI '+score+']':''}`;
+    }).join('
+');
 
-isPlayed:true sadece oynandıysa | isLive:true sadece şu an oynanıyorsa | varsayılan: false
-Oranlar 1.25-7.50 arası, 2 ondalık.
-winScenario/loseScenario/drawScenario max 8 kelime Türkçe.
+    step(2,75,'Tahminler üretiliyor…'); await sleep(200);
 
-ÖNEMLI: Bugün ${dateStr}. Sadece bugün ve sonraki 7 günün maçlarını listele. Geçmiş maçları ekleme.
-Tarihleri YYYY-MM-DD formatında yaz, gerçek maç tarihlerini kullan.
+    const prompt = `Bugün: ${dateStr} ${timeStr} Türkiye saati.
+Şu gerçek maçlar için JSON üret:
+${fixtureList}
 
-SADECE JSON yanıt ver, başka hiçbir şey yazma:
-{"matches":[{"id":1,"league":"Süper Lig","flag":"🇹🇷","homeTeam":"Fenerbahçe","awayTeam":"Gaziantep FK","date":"2026-03-17","time":"19:00","homeWinOdds":1.35,"drawOdds":4.50,"awayWinOdds":7.00,"over25Odds":1.60,"under25Odds":2.25,"prediction":"home","goalPrediction":"over","confidence":82,"weather":"🌤️ 14°C açık rüzgar 12km/s","injuries":"⚠️ Crespo şüpheli","winScenario":"Fenerbahçe evinde bu sezon sadece 1 maç kaybetti. Osimhen formda.","loseScenario":"Gaziantep deplasmanda sürpriz yapabilir.","drawScenario":"Fenerbahçe tempo düşürürse Gaziantep puanı kurtarabilir.","isPlayed":false,"isLive":false,"result":null,"liveMinute":null}]}`;
+Her maç için: prediction(home/draw/away), goalPrediction(over/under), confidence(40-95), homeWinOdds, drawOdds, awayWinOdds, over25Odds, under25Odds (1.20-7.50), weather(emoji+şehir+derece), injuries(null veya kısa), winScenario/loseScenario/drawScenario (max 6 kelime Türkçe).
 
-  let parsed = null;
-  for(let attempt=0; attempt<3; attempt++){
-    try{
-      const raw = await callAI(prompt);
-      const clean=raw.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/\s*```$/i,'').trim();
-      const jMatch=clean.match(/\{[\s\S]*\}/);
-      if(!jMatch) { if(attempt<2) continue; throw new Error('JSON bulunamadı.'); }
-      parsed=JSON.parse(jMatch[0]);
-      if(parsed.matches?.length) break;
-    }catch(e){
-      if(attempt===2) throw new Error('3 denemede başarısız: '+e.message.slice(0,60));
-      await sleep(1000);
+SADECE JSON:
+{"matches":[{"id":1,"league":"Süper Lig","flag":"🇹🇷","homeTeam":"Fenerbahçe","awayTeam":"Gaziantep FK","date":"2026-03-17","time":"19:00","homeWinOdds":1.45,"drawOdds":4.00,"awayWinOdds":6.00,"over25Odds":1.65,"under25Odds":2.20,"prediction":"home","goalPrediction":"over","confidence":80,"weather":"🌤️ İstanbul 14°C","injuries":null,"winScenario":"Ev baskısı belirleyici.","loseScenario":"Gaziantep kontr.","drawScenario":"Dengeli tempo.","isPlayed":false,"isLive":false,"result":null,"liveMinute":null}]}`;
+
+    step(3,90,'Son dokunuşlar…'); await sleep(200);
+
+    let aiMatches = null;
+    for(let attempt=0; attempt<3; attempt++){
+      try{
+        const raw = await callAI(prompt);
+        const clean = raw.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/\s*```$/i,'').trim();
+        const jMatch = clean.match(/\{[\s\S]*\}/);
+        if(!jMatch){ if(attempt<2){await sleep(800);continue;} throw new Error('JSON bulunamadı.'); }
+        aiMatches = JSON.parse(jMatch[0]);
+        if(aiMatches.matches?.length) break;
+      } catch(e){
+        if(attempt===2) throw new Error('AI hatası: '+e.message.slice(0,60));
+        await sleep(1000);
+      }
     }
-  }
-  if(!parsed?.matches?.length) throw new Error('Maç listesi boş. Tekrar deneyin.');
 
-  ALL=parsed.matches;
-  const upd=document.getElementById('lastUpd');
+    matches = (aiMatches?.matches||[]).map((aiM, i) => {
+      const real = fixtures[i];
+      if (!real) return aiM;
+      const status = real.status;
+      const isLive = status==='IN_PLAY'||status==='PAUSED';
+      const isPlayed = status==='FINISHED';
+      const result = (isLive||isPlayed) && real.score?.fullTime
+        ? `${real.score.fullTime.home??0}-${real.score.fullTime.away??0}` : null;
+      return {
+        ...aiM,
+        id: real.id || aiM.id,
+        homeTeam: real.homeTeam?.shortName || real.homeTeam?.name || aiM.homeTeam,
+        awayTeam: real.awayTeam?.shortName || real.awayTeam?.name || aiM.awayTeam,
+        date: toDate(real.utcDate) || aiM.date,
+        time: toTR(real.utcDate) || aiM.time,
+        isLive, isPlayed,
+        result,
+        liveMinute: real.minute ? real.minute+"'" : null,
+      };
+    });
+
+  } else {
+    // football-data yok, sadece AI
+    step(2,75,'AI fikstür oluşturuyor…'); await sleep(200);
+    const prompt = `Bugün: ${dateStr} ${timeStr} Türkiye.
+Süper Lig + Premier Lig + La Liga + Bundesliga, MAX 10 maç.
+Sadece bugünden itibaren 7 günlük maçlar. Gerçek tarih/saat kullan (TR saati).
+isPlayed false, isLive false.
+winScenario/loseScenario/drawScenario max 6 kelime Türkçe.
+SADECE JSON:
+{"matches":[{"id":1,"league":"Süper Lig","flag":"🇹🇷","homeTeam":"Fenerbahçe","awayTeam":"Gaziantep FK","date":"2026-03-17","time":"19:00","homeWinOdds":1.45,"drawOdds":4.00,"awayWinOdds":6.00,"over25Odds":1.65,"under25Odds":2.20,"prediction":"home","goalPrediction":"over","confidence":80,"weather":"🌤️ İstanbul 14°C","injuries":null,"winScenario":"Ev baskısı belirleyici.","loseScenario":"Gaziantep kontr.","drawScenario":"Dengeli tempo.","isPlayed":false,"isLive":false,"result":null,"liveMinute":null}]}`;
+
+    step(3,90,'Son dokunuşlar…'); await sleep(200);
+    let parsed = null;
+    for(let attempt=0; attempt<3; attempt++){
+      try{
+        const raw = await callAI(prompt);
+        const clean = raw.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/\s*```$/i,'').trim();
+        const jMatch = clean.match(/\{[\s\S]*\}/);
+        if(!jMatch){ if(attempt<2){await sleep(800);continue;} throw new Error('JSON bulunamadı.'); }
+        parsed = JSON.parse(jMatch[0]);
+        if(parsed.matches?.length) break;
+      } catch(e){
+        if(attempt===2) throw new Error('AI hatası: '+e.message.slice(0,60));
+        await sleep(1000);
+      }
+    }
+    matches = parsed?.matches || [];
+  }
+
+  // Oynanan maçları filtrele
+  const today = new Date(); today.setHours(0,0,0,0);
+  matches = matches.filter(m => {
+    if(m.isPlayed) return false;
+    try { return new Date(m.date+'T00:00:00') >= today; } catch { return true; }
+  });
+
+  if(!matches.length) throw new Error('Gösterilecek maç bulunamadı.');
+  ALL = matches;
+  const upd = document.getElementById('lastUpd');
   if(upd){upd.style.display='';upd.textContent='🔄 '+new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});}
   updateStats(); buildLF(); buildCoupons(); render(); updateTicker();
 }
-
-
-// ── REAL SUPER LIG FIXTURES (web'den alındı) ─────────
-function getSuperLigFixtures(now) {
-  // Bu haftanın gerçek Süper Lig maçları (Flashscore/TFF verisine göre)
-  // 26-27. hafta (15-22 Mart 2026)
-  const fixtures = [
-    // 26. Hafta (15 Mart - oynanmış)
-    { home: 'Gençlerbirliği', away: 'Beşiktaş',    date: '2026-03-15', time: '19:00', played: true },
-    { home: 'Samsunspor',     away: 'Kayserispor', date: '2026-03-15', time: '21:00', played: true },
-    // 27. Hafta (16-22 Mart - oynanacak)
-    { home: 'Fenerbahçe',     away: 'Gaziantep FK', date: '2026-03-17', time: '19:00', played: false },
-    { home: 'Alanyaspor',     away: 'Kocaelispor', date: '2026-03-18', time: '19:00', played: false },
-    { home: 'Başakşehir',     away: 'Antalyaspor', date: '2026-03-18', time: '21:00', played: false },
-    { home: 'Eyüpspor',       away: 'Trabzonspor', date: '2026-03-18', time: '21:00', played: false },
-    { home: 'Galatasaray',    away: 'Konyaspor',   date: '2026-03-19', time: '19:00', played: false },
-    { home: 'Kasımpaşa',      away: 'Göztepe',     date: '2026-03-19', time: '21:00', played: false },
-    { home: 'Rizespor',       away: 'Fatih Karagümrük', date: '2026-03-21', time: '19:00', played: false },
-    { home: 'Kayserispor',    away: 'Eyüpspor',    date: '2026-03-22', time: '19:00', played: false },
-  ];
-
-  return fixtures.map(f =>
-    `${f.date} ${f.time} | ${f.home} vs ${f.away}${f.played ? ' [OYNANDI]' : ''}`
-  ).join('\n');
-}
-
-// ── TICKER ────────────────────────────────────────────
-function updateTicker(){
-  const el=document.getElementById('tickerInner');
-  if(!el||!ALL.length) return;
-  el.textContent=ALL.map(m=>
-    `${m.flag||'⚽'} ${m.homeTeam} vs ${m.awayTeam}`+
-    (m.isLive?` 🔴 CANLI ${m.liveMinute||''}`:m.isPlayed?` ✅ ${m.result||'Oynandı'}`:'')+
-    ` · ${{home:'Ev',draw:'Ber',away:'Dep'}[m.prediction]} · %${m.confidence}`
-  ).join('   ·   ');
-}
-
-// ── STATS ─────────────────────────────────────────────
-function updateStats(){
-  const c={all:ALL.length,home:0,away:0,draw:0,over:0,under:0};
-  ALL.forEach(m=>{if(!m.isPlayed){c[m.prediction]++;c[m.goalPrediction]++;}});
-  ['all','home','away','draw','over','under'].forEach((k,i)=>{
-    const el=document.getElementById('sv'+i); if(el) el.textContent=c[k]||0;
-  });
-}
-
-// ── LEAGUE BAR ────────────────────────────────────────
-function buildLF(){
-  const fm={'Champions League':'🏆','Premier Lig':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','La Liga':'🇪🇸','Bundesliga':'🇩🇪','Ligue 1':'🇫🇷','Serie A':'🇮🇹','Süper Lig':'🇹🇷','Europa League':'🟠'};
-  const leagues=[...new Set(ALL.map(m=>m.league))];
-  document.getElementById('lfBar').innerHTML=
-    `<button class="lfb on" onclick="lf('all',this)">🌍 Tümü</button>`+
-    leagues.map(l=>`<button class="lfb" onclick="lf('${l.replace(/'/g,"\\'")}',this)">${fm[l]||'⚽'} ${l}</button>`).join('');
-}
-
-// ── FILTERS ───────────────────────────────────────────
-function sf(f,el){
-  SF=f;
-  document.querySelectorAll('.sc').forEach(c=>c.classList.remove('act'));
-  el.classList.add('act');
-  document.getElementById('secT').textContent={all:'Tüm Maçlar',home:'Ev Galibiyeti',away:'Deplasman Galibiyeti',draw:'Beraberlik',over:'2.5 Üst',under:'2.5 Alt'}[f];
-  render();
-}
-function lf(f,el){
-  LF=f;
-  document.querySelectorAll('.lfb').forEach(b=>b.classList.remove('on'));
-  el.classList.add('on');
-  render();
-}
-
-// ── RENDER ────────────────────────────────────────────
-function render(){
-  const list=document.getElementById('matchList');
-  const today=new Date(); today.setHours(0,0,0,0);
-  let items=(LF==='all'?ALL:ALL.filter(m=>m.league===LF))
-    .filter(m=>{
-      if(m.isPlayed) return false;
-      try{ return new Date(m.date+'T00:00:00')>=today; }catch{ return true; }
-    });
-  document.getElementById('mCntBadge').textContent=items.length+' maç';
-  if(!items.length){list.innerHTML=`<div class="stb"><div class="si">🔍</div><h3>Maç Bulunamadı</h3></div>`;return;}
-  list.innerHTML=items.map((m,i)=>card(m,i)).join('');
-  if(SF!=='all'){
-    document.querySelectorAll('.mc').forEach(el=>{
-      const m=ALL.find(x=>x.id==el.dataset.mid); if(!m)return;
-      const ok=(SF==='home'&&m.prediction==='home')||(SF==='away'&&m.prediction==='away')||(SF==='draw'&&m.prediction==='draw')||(SF==='over'&&m.goalPrediction==='over')||(SF==='under'&&m.goalPrediction==='under');
-      if(!ok) el.classList.add('dimmed');
-    });
-  }
-  setTimeout(()=>document.querySelectorAll('.c-fill').forEach(e=>e.style.width=e.dataset.w+'%'),60);
-}
-
-function card(m,i){
-  const pc={home:'ph',away:'pa',draw:'pd'}[m.prediction];
-  const pa={home:'h',away:'a',draw:'d'}[m.prediction];
-  const pl={home:'Ev Kazanır',draw:'Berabere',away:'Dep Kazanır'}[m.prediction];
-  const gl=m.goalPrediction==='over'?'2.5 Üst':'2.5 Alt';
-  const cc=m.confidence>=70?'hi':m.confidence>=50?'mi':'lo';
-  const fc=m.confidence>=70?'var(--g)':m.confidence>=50?'var(--y)':'var(--r)';
-  const tp=m.confidence>=78?'<span class="tp-b">⭐ Güçlü</span>':'';
-  const chk=SEL.has(m.id);
-  const wx=m.weather?`<div class="mc-wx">${m.weather}</div>`:'';
-  const inj=m.injuries?`<div class="mc-inj">🩹 ${m.injuries}</div>`:'';
-  let badge='';
-  if(m.isLive) badge=`<div class="live-b"><div class="ld"></div>🔴 CANLI${m.liveMinute?' · '+m.liveMinute:''}</div>`;
-  else if(m.isPlayed) badge=`<div class="played-b">✅ OYNANDI${m.result?' · '+m.result:''}</div>`;
-  const df=(()=>{try{return new Date(m.date+'T00:00:00').toLocaleDateString('tr-TR',{weekday:'short',day:'2-digit',month:'short'});}catch{return m.date||'—';}})();
-  return `
-  <div class="mc ${pc}${(m.isLive||m.isPlayed)?' has-s':''}" data-mid="${m.id}" style="animation-delay:${(i*.038).toFixed(2)}s">
-    ${badge}
-    <div class="chk${chk?' on':''}" onclick="toggleSel(${m.id},event)"></div>
-    <div class="mc-top">
-      <div>
-        <div class="mc-league">${m.flag||''} ${m.league}</div>
-        <div class="mc-date">${df}</div>
-        <div class="mc-time">${m.time}</div>
-        <span class="tag-sm">📊 İddaa</span>
-        ${wx}${inj}
-      </div>
-      <div>
-        <div class="tr"><div class="tn">${m.homeTeam}</div><div class="vs-t">VS</div><div class="tn aw">${m.awayTeam}</div>${tp}</div>
-        <div class="or">
-          <div class="op h"><span class="op-l">1 Ev</span><span class="op-v">${(+m.homeWinOdds).toFixed(2)}</span><span class="op-s">oran</span></div>
-          <div class="op d"><span class="op-l">X Ber</span><span class="op-v">${(+m.drawOdds).toFixed(2)}</span><span class="op-s">oran</span></div>
-          <div class="op a"><span class="op-l">2 Dep</span><span class="op-v">${(+m.awayWinOdds).toFixed(2)}</span><span class="op-s">oran</span></div>
-          <div class="dv"></div>
-          <div class="op ov"><span class="op-l">2.5 Üst</span><span class="op-v">${(+m.over25Odds).toFixed(2)}</span><span class="op-s">oran</span></div>
-          <div class="op un"><span class="op-l">2.5 Alt</span><span class="op-v">${(+m.under25Odds).toFixed(2)}</span><span class="op-s">oran</span></div>
-          <div class="ai-b"><div class="ai-lb">AI Tahmin</div><div class="ai-pr ${pa}">${pl}</div><div class="ai-gl">${gl}</div></div>
-        </div>
-        <div class="cr">
-          <span class="c-lb">Güven</span>
-          <div class="c-bar"><div class="c-fill" data-w="${m.confidence}" style="width:0%;background:linear-gradient(90deg,${fc},${fc}88)"></div></div>
-          <span class="c-pct ${cc}">${m.confidence}%</span>
-        </div>
-      </div>
-    </div>
-    <div class="scenarios">
-      <div class="sbox w"><div class="sbox-ttl w">✅ ${m.homeTeam} Kazanırsa</div><div class="sbox-txt">${m.winScenario||'—'}</div></div>
-      <div class="sbox l"><div class="sbox-ttl l">❌ ${m.awayTeam} Kazanırsa</div><div class="sbox-txt">${m.loseScenario||'—'}</div></div>
-      <div class="sbox dr"><div class="sbox-ttl dr">🟡 Berabere Kalırlarsa</div><div class="sbox-txt">${m.drawScenario||'—'}</div></div>
-    </div>
-  </div>`;
-}
-
-// ── CUSTOM SELECT ─────────────────────────────────────
-function toggleSel(id,e){
-  e.stopPropagation();
-  if(SEL.has(id)) SEL.delete(id); else SEL.add(id);
-  buildCustom();
-  document.querySelectorAll(`.mc[data-mid="${id}"] .chk`).forEach(el=>{
-    el.className='chk'+(SEL.has(id)?' on':'');
-  });
-}
-
-// ── COUPONS ───────────────────────────────────────────
-function buildCoupons(){
-  const active=ALL.filter(m=>!m.isPlayed&&!m.isLive);
-  const srt=[...active].sort((a,b)=>b.confidence-a.confidence);
-  rcp('s',srt.filter(m=>m.confidence>=70).slice(0,5));
-  buildCustom();
-}
-function buildCustom(){rcp('c',ALL.filter(m=>SEL.has(m.id)));}
-function rcp(t,items){
-  const cntId={s:'sCnt',m:'mCnt2',r:'rCnt',c:'cCnt'}[t];
-  const bodyId={s:'sBody',m:'mBody',r:'rBody',c:'cBody'}[t];
-  const totId={s:'sTot',m:'mTot',r:'rTot',c:'cTot'}[t];
-  const cnt=document.getElementById(cntId),body=document.getElementById(bodyId),tot=document.getElementById(totId);
-  if(!cnt) return;
-  cnt.textContent=items.length+' seç';
-  if(!items.length){
-    body.innerHTML=`<div class="cem"><div class="cem-i">${t==='c'?'☑️':'📋'}</div>${t==='c'?'Kart köşesini işaretle':'Analiz bekleniyor…'}</div>`;
-    tot.textContent='—'; cw(t); return;
-  }
-  body.innerHTML=items.map(m=>`
-  <div class="ci ${t}">
-    <div class="ci-t">${m.homeTeam} <span style="color:var(--mu);font-weight:400">vs</span> ${m.awayTeam}</div>
-    <div class="ci-r">
-      <div class="ci-p">
-        <span>${{home:'Ev',draw:'Ber',away:'Dep'}[m.prediction]}</span><span style="opacity:.3">·</span>
-        <span>${m.goalPrediction==='over'?'2.5Ü':'2.5A'}</span><span style="opacity:.3">·</span>
-        <span style="font-family:'DM Mono';font-size:7px">${m.confidence}%</span>
-      </div>
-      <div class="ci-o ${t}">${podd(m).toFixed(2)}</div>
-    </div>
-  </div>`).join('');
-  tot.textContent=items.reduce((a,m)=>a*podd(m),1).toFixed(2);
-  cw(t);
-}
-function podd(m){return m.prediction==='home'?+m.homeWinOdds:m.prediction==='away'?+m.awayWinOdds:+m.drawOdds;}
-function cw(t){
-  const totId={s:'sTot',m:'mTot',r:'rTot',c:'cTot'}[t];
-  const sk=parseFloat(document.getElementById('sk-'+t)?.value)||0;
-  const tv=parseFloat(document.getElementById(totId)?.textContent)||0;
-  const el=document.getElementById('cw-'+t);
-  if(el) el.textContent=(sk>0&&tv>0)?'₺'+(sk*tv).toFixed(2):'—';
-}
-
-// ── COUNTDOWN ─────────────────────────────────────────
-function startCD(s){
-  if(cdTimer) clearInterval(cdTimer);
-  const el=document.getElementById('cdBox');
-  cdTimer=setInterval(()=>{
-    s--;
-    if(el) el.textContent=`⟳ ${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
-    if(s<=0){clearInterval(cdTimer);if(el) el.textContent='⟳ Güncelle';}
-  },1000);
-}
-function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
-</script>
-</body>
-</html>
